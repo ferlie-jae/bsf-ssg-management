@@ -1,0 +1,26 @@
+#loader {
+    height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 9999999;
+    background-color: #ffffff5c;
+    /*background-color: #0000005c;*/
+    /* -webkit-animation-duration: 80s;
+    -moz-animation-duration: 80s;
+    -o-animation-duration: 80s;
+    animation-duration: 80s;
+    -webkit-animation-iteration-count: infinite;
+    -moz-animation-iteration-count: infinite;
+    -o-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+    -webkit-animation-name: pulsate;
+    -moz-animation-name: pulsate;
+    -o-animation-name: pulsate;
+    animation-name: pulsate;
+    -webkit-animation-direction: normal;
+    -moz-animation-direction: normal;
+    -o-animation-direction: normal;
+    animation-direction: normal; */
+  }
