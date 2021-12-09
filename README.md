@@ -1,4 +1,4 @@
-<h2 align="center">Golden West College Evaluation System</h2>
+<h2 align="center">Binmaley School of Fisheries SSG Mangement System</h2>
 
 <hr>
 
@@ -42,22 +42,19 @@
   ```
 - Execute this on shell/terminal: 
   ```
-  php artisan artisan install
+  php artisan install
   ```
 - Execute this on shell/terminal: 
   ```
   php artisan config:cache
   ```
-- Open 
+- Open <code>C:/xampp/apache/conf/extra/httpd-vhost.conf</code> and add
   ```
-  C:/xampp/apache/conf/extra/httpd-vhost.conf</code> and add
+  <VirtualHost *:80>
+      DocumentRoot "C:/xampp/htdocs/bsf-ssg-management/public"
+      ServerName bsf-ssg-management.me
+  </VirtualHost>
   ```
-    ```
-    <VirtualHost *:80>
-        DocumentRoot "C:/xampp/htdocs/bsf-ssg-management/public"
-        ServerName bsf-ssg-management.me
-    </VirtualHost>
-    ```
     and save.
 - Launch notepad as administrator and open <code>C:/Windows/System32/drivers/etc/hosts</code> file and add
     ```
