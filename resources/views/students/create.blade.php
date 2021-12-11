@@ -58,8 +58,12 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label>Birth Date:</label><br>
-                                <input class="form-control" type="date" name="birth_date" value="{{ old('birth_date') }}" required>
+                                <label for="birthDate">Birth Date:</label><br>
+                                <input id="birthDate" onchange="calculateAge(this)" class="form-control" type="date" name="birth_date" value="{{ old('birth_date') }}" required>
+                                <span id="age"></span>
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>Age must be 6 years old and above.</strong>
+                                </span>
                             </div>
                             <div class="form-group">
                                 <label>Contact #:</label><br>
@@ -111,13 +115,31 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal-ajax">Cancel</button>
-                    <button class="btn btn-default text-success" type="submit"><i class="fas fa-save"></i> Save</button>
+                    <button id="btnSubmit" class="btn btn-default text-success" type="submit"><i class="fas fa-save"></i> Save</button>
                 </div>
             </div>
         </div>
     </div>
 </form>
 <script>
+    function calculateAge(input){
+        var dob = $(input).val();
+        dob = new Date(dob);
+        var today = new Date();
+        var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
+        if(age < 6){
+            $('#btnSubmit').prop('disabled', true)
+            $(input).addClass('is-invalid');
+        }else{
+            $('#btnSubmit').prop('disabled', false)
+            $(input).removeClass('is-invalid');
+        }
+        if(age > -1){
+            $('#age').html(age+' years old');
+        }else{
+            $('#age').html('0 years old');
+        }
+    }
     $(function(){
         addUserCredentials()
 
@@ -134,5 +156,6 @@
                 $('#userCredentials select').attr('disabled', true)
             }
         }
+        
     })
 </script>

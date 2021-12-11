@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-	return redirect()->route('pages.vision_mission');
+	return redirect()->route('website.index');
 });
 
 Auth::routes();
@@ -22,27 +22,39 @@ Route::get('/pages/vision_mission', 'PageController@visionMission')->name('pages
 Route::get('/pages/achievements', 'PageController@achievements')->name('pages.achievements');
 Route::get('/pages/officers', 'PageController@officers')->name('pages.officers');
 
+Route::get('home', 'WebsiteController@index')->name('website.index');
+Route::get('vision-mission', 'WebsiteController@visionMission')->name('website.vision_mission');
+Route::get('bsf-hmn', 'WebsiteController@bsfHymn')->name('website.bsf_hymn');
+Route::get('history', 'WebsiteController@history')->name('website.history');
+Route::get('contact-us', 'WebsiteController@contactUs')->name('website.contact_us');
+Route::post('contact-us/submit', 'WebsiteController@submitContactUs')->name('website.submit_contact_us');
+Route::get('campus-officials', 'WebsiteController@campusOfficials')->name('website.campus_officials');
+Route::get('ssg-officials', 'WebsiteController@ssgOfficials')->name('website.ssg_officials');
+Route::get('campus-news', 'WebsiteController@campusNews')->name('website.campus_news');
+Route::get('courses-offered', 'WebsiteController@courses')->name('website.courses');
+Route::get('enrollment-procedure', 'WebsiteController@enrollmentProcedure')->name('website.enrollment_procedure');
+
 
 Route::group(array('middleware'=>['auth']), function() {
 
     /**
 	 * Roles and Permissions
 	 */
-    Route::resource('roles', 'Configuration\RolePermission\RoleController');
+    /* Route::resource('roles', 'Configuration\RolePermission\RoleController');
 	// Route::get('/roles_get_data', 'Configuration\RolePermission\RoleController@get_data')->name('roles.get_data');
 	// restore
 	Route::post('roles/restore/{department}', [
 		'as' => 'roles.restore',
 		'uses' => 'Configuration\RolePermission\RoleController@restore'
-    ]);
+    ]); */
     
-    Route::resource('permissions', 'Configuration\RolePermission\PermissionController');
+    /* Route::resource('permissions', 'Configuration\RolePermission\PermissionController');
 	// Route::get('/permissions_get_data', 'Configuration\RolePermission\PermissionController@get_data')->name('permissions.get_data');
 	// restore
 	Route::post('permissions/restore/{department}', [
 		'as' => 'permissions.restore',
 		'uses' => 'Configuration\RolePermission\PermissionController@restore'
-	]);
+	]); */
 	
 	/**
 	 * Positions

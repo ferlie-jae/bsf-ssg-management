@@ -1,8 +1,8 @@
 #loader {
     height: 100%;
     left: 0;
-    position: fixed;
     top: 0;
+    position: fixed;
     width: 100%;
     z-index: 9999999;
     background-color: #ffffff5c;

@@ -31,7 +31,7 @@ class SectionController extends Controller
 			$sections->withTrashed();
 		}
         $data = [
-            'sections' => $sections->get()
+            'gradeLevels' => $sections->get()->groupBy('grade_level')
         ];
         
 		return view('configuration.sections.index', $data);

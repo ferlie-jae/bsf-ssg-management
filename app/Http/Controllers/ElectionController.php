@@ -315,7 +315,12 @@ class ElectionController extends Controller
 
                     // Pie Chart
                     foreach ($candidates as $candidate) {
-                        $percentage = round(($candidate->votes->count() / $totalVotes) * 100, PHP_ROUND_HALF_UP );
+                        $countVotes = $candidate->votes->count();
+                        if($countVotes > 0){
+                            $percentage = round(($countVotes / $totalVotes) * 100, PHP_ROUND_HALF_UP );
+                        }else{
+                            $percentage = 0;
+                        }
                         $pieChartLabelsByPercentage[] = $candidate->student->fullname('').(isset($candidate->partylist->name) ? ' ('.$candidate->partylist->name.') ' : ' ') . $percentage.'%';
                     }
                     $electionPieChart[$election->id][$position]->labels($pieChartLabelsByPercentage);

@@ -15,7 +15,7 @@
   ```
 - Execute this on shell/terminal: 
   ```
-  git clone https://github.com/yourname001/bsf-ssg-management.git
+  git clone https://github.com/ferliejay/bsf-ssg-management.git
   ```
 - Execute this on shell/terminal: 
   ```
