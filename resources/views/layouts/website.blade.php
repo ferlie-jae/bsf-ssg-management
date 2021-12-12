@@ -219,9 +219,9 @@
         $(window).on('beforeunload', function(){
            $('#loader').fadeIn();
         });
-        /* $(window).on('load', function(){
+        $(window).on('load', function(){
            $('#loader').fadeOut();
-        }); */
+        });
     </script>
     @yield('script')
 </body>
