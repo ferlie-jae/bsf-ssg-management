@@ -41,7 +41,7 @@ class ElectionController extends Controller
             $elections = $elections->withTrashed();
         }
         $data = [
-            'elections' => $elections->get()
+            'elections' => $elections->orderBy('created_at', 'DESC')->get()
         ];
 
         return view('elections.index', $data);
@@ -82,7 +82,7 @@ class ElectionController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-			'title' => ['required', 'unique:elections,title'],
+			'title' => ['required'],
             'start_date' => 'required',
             'end_date' => 'required',
             // 'description' => 'required',
@@ -163,7 +163,7 @@ class ElectionController extends Controller
     public function update(Request $request, Election $election)
     {
         $request->validate([
-			'title' => ['required', 'unique:elections,title,'.$election->id],
+			'title' => ['required'],
             'start_date' => 'required',
             'end_date' => 'required',
         ]);

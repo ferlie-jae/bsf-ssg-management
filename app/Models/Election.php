@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 use App\Models\Candidate;
+use App\Models\Configuration\Position;
 use Auth;
 
 class Election extends Model
@@ -90,6 +91,53 @@ class Election extends Model
                 break;
         }
         return $badge;
+    }
+
+    public function getElectedCandidateByPosition($positionID)
+    {
+        $position = Position::find($positionID);
+        if(isset($this->id)){
+            if($position->candidate_to_elect > 1) {
+                $candidates = Candidate::where([
+                    ['election_id', $this->id],
+                    ['position_id', $position->id],
+                ]);
+                $highestVote = 0;
+                $finalElected = [];
+                for ($i=0; $i < $position->candidate_to_elect; $i++) 
+                {
+                    $highestVote = 0;
+                    $electedID = 0;
+                    foreach($candidates->whereNotIn('id', $finalElected)->get() as $candidate)
+                    {
+                        if($candidate->votes->count() > $highestVote) {
+                            $highestVote= $candidate->votes->count();
+                            $electedID = $candidate->id;
+                        }
+                    }
+                    $finalElected[] = $electedID;
+                }
+                return Candidate::whereIn('id', $finalElected)->get();
+            }
+            else {
+                $candidates = Candidate::where([
+                    ['election_id', $this->id],
+                    ['position_id', $position->id],
+                ])->get();
+                $highestVote = 0;
+                $electedID = 0;
+                foreach($candidates as $candidate)
+                {
+                    if($candidate->votes->count() > $highestVote) {
+                        $electedID = $candidate->id;
+                        $highestVote = $candidate->votes->count();
+                    }
+                }
+                return Candidate::find($electedID);
+            }
+        }else{
+            return false;
+        }
     }
 
     /* public function status() {

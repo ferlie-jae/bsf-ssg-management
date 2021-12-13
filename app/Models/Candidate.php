@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Election;
+use App\Models\Candidate;
 use App\Models\Configuration\Position;
 
 class Candidate extends Model
@@ -59,14 +60,6 @@ class Candidate extends Model
             }
             $candidateIDs[] = $elected;
         }
-    }
-
-    public function isElected()
-    {
-        $candidates = VoteData::where('position_id', $this->position_id)
-        ->groupedBy('candidate_id')
-        ->get();
-        
     }
     
 }

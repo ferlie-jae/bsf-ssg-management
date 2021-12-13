@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Achievement;
+use App\Models\Announcement;
 use App\Models\Election;
 
 class WebsiteController extends Controller
@@ -32,6 +33,20 @@ class WebsiteController extends Controller
     {
         return view('website.contact_us');
     }
+
+    public function campusOfficials()
+    {
+        
+    }
+
+    public function ssgOfficials()
+    {
+        $elections = Election::orderBy('created_at', 'DESC')->get();
+        $data = [
+            'elections' => $elections
+        ];
+        return view('website.ssg_officials', $data);
+    }
     
     public function achievements()
     {
@@ -44,11 +59,14 @@ class WebsiteController extends Controller
         return view('achievements.index', $data);
     }
 
-    public function officers()
+    public function campusNews()
     {
+        $announcements = Announcement::orderBy('created_at', 'DESC')->get();
+
         $data = [
-            'positions' => Position::get()
+            'announcements' => $announcements
         ];
-        return view('students.officers', $data);
+        
+        return view('website.campus_news', $data);
     }
 }

@@ -24,9 +24,17 @@
     {{-- <link href="{{ asset('bootstrap-4.0.0/css/bootstrap.min.css') }}" rel="stylesheet"> --}}
     <link href="{{ asset('MDB5-STANDARD-UI-KIT-Free-3.10.1/css/mdb.min.css') }}" rel="stylesheet">
     <style>
+        /* .main-navbar-transition {
+            background-color: red !important;
+            border-bottom: 4px solid green;
+            transition: background-color 1s, border-bottom 0.5s;
+        } */
         .main-navbar {
-            border-bottom: 3px solid green;
+            border-bottom: 4px solid green;
         }
+        /* .nav-item > a {
+            color: red
+        } */
         .nav-item.active {
             font-weight: bold;
             color: green;
@@ -70,7 +78,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item active">
+                    <li class="nav-item">
                         <a class="nav-link" href="#">Home</a>
                     </li>
                     <li class="nav-item dropdown">
@@ -126,7 +134,7 @@
         @endif
         @yield('content')
     </section>
-    <footer class="text-center text-lg-start bg-light text-muted pt-1" style="border-top: 3px solid green">
+    <footer class="text-center text-lg-start bg-light text-muted pt-1" style="border-top: 4px solid green">
         <section class="">
             <div class="container text-center text-md-start mt-5">
                 <div class="row mt-3">
@@ -221,6 +229,15 @@
         });
         $(window).on('load', function(){
            $('#loader').fadeOut();
+        });
+
+        // animate navbar on scroll
+        $(window).scroll(function() {
+            if ($(document).scrollTop() > 100) {
+                $('nav').addClass('main-navbar-transition');
+            } else {
+                $('nav').removeClass('main-navbar-transition');
+            }
         });
     </script>
     @yield('script')

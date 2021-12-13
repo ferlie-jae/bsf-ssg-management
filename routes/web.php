@@ -15,14 +15,17 @@ Route::get('/', function () {
 	return redirect()->route('website.index');
 });
 
+Route::get('home', function () {
+	return redirect()->route('dashboard');
+})->name('home');
+
 Auth::routes();
 
-Route::get('/dashboard', 'HomeController@index')->name('dashboard');
 Route::get('/pages/vision_mission', 'PageController@visionMission')->name('pages.vision_mission');
 Route::get('/pages/achievements', 'PageController@achievements')->name('pages.achievements');
 Route::get('/pages/officers', 'PageController@officers')->name('pages.officers');
 
-Route::get('home', 'WebsiteController@index')->name('website.index');
+Route::get('homepage', 'WebsiteController@index')->name('website.index');
 Route::get('vision-mission', 'WebsiteController@visionMission')->name('website.vision_mission');
 Route::get('bsf-hmn', 'WebsiteController@bsfHymn')->name('website.bsf_hymn');
 Route::get('history', 'WebsiteController@history')->name('website.history');
@@ -36,6 +39,7 @@ Route::get('enrollment-procedure', 'WebsiteController@enrollmentProcedure')->nam
 
 
 Route::group(array('middleware'=>['auth']), function() {
+	Route::get('dashboard', 'HomeController@index')->name('dashboard');
 
     /**
 	 * Roles and Permissions
