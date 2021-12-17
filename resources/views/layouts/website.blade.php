@@ -23,6 +23,7 @@
     <!-- Styles -->
     {{-- <link href="{{ asset('bootstrap-4.0.0/css/bootstrap.min.css') }}" rel="stylesheet"> --}}
     <link href="{{ asset('MDB5-STANDARD-UI-KIT-Free-3.10.1/css/mdb.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('MDBootstrap-5-v2.0.0/css/mdb.min.css') }}" rel="stylesheet">
     <style>
         /* .main-navbar-transition {
             background-color: red !important;
@@ -51,7 +52,7 @@
             position: fixed;
             opacity: 10%;
             z-index: -1000;
-            left: 0;
+            left: 0;f
             top: 0;
         }
         #loader {
@@ -61,7 +62,7 @@
             /* left: 0; */
             top: 1;
             z-index: 9999999;
-            background-color: #ffffff5c;
+            background-color: transparent;
         }
     </style>
     @yield('style')
@@ -89,6 +90,7 @@
                             <a class="dropdown-item" href="{{ route('website.vision_mission') }}">Vision/Mission</a>
                             <a class="dropdown-item" href="{{ route('website.bsf_hymn') }}">BSF Hymn</a>
                             <a class="dropdown-item" href="{{ route('website.history') }}">History</a>
+                            <a class="dropdown-item" href="{{ route('website.achievements') }}">Achievements</a>
                             <a class="dropdown-item" href="{{ route('website.contact_us') }}">Contact us</a>
                         </div>
                     </li>
@@ -152,6 +154,9 @@
                             <a href="{{ route('website.history') }}" class="text-reset">History</a>
                         </p>
                         <p>
+                            <a href="{{ route('website.achievements') }}" class="text-reset">Achievements</a>
+                        </p>
+                        <p>
                             <a href="{{ route('website.contact_us') }}" class="text-reset">Contact Us</a>
                         </p>
                     </div>
@@ -182,7 +187,7 @@
                             <a href="{{ route('website.courses') }}" class="text-reset">Courses Offered</a>
                         </p>
                         <p>
-                            {{-- <a href="{{ route('website.enrollment_procedure') }}" class="text-reset">Enrollment Procedure</a> --}}
+                            <a href="{{ route('website.enrollment_procedure') }}" class="text-reset">Enrollment Procedure</a>
                         </p>
                         <p>
                             <a href="{{ route('login') }}" class="text-reset">Login</a>
@@ -222,6 +227,7 @@
     <!-- Footer -->
     {{-- <script src="{{ asset('bootstrap-4.0.0/js/bootstrap.bundle.min.js') }}"></script> --}}
     <script src="{{ asset('MDB5-STANDARD-UI-KIT-Free-3.10.1/js/mdb.min.js') }}"></script>
+    <script src="{{ asset('MDBootstrap-5-v2.0.0/js/mdb.min.js') }}"></script>
     <script>
         // loader
         $(window).on('beforeunload', function(){

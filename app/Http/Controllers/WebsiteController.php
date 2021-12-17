@@ -36,7 +36,7 @@ class WebsiteController extends Controller
 
     public function campusOfficials()
     {
-        
+        return view('website.campus_officials');
     }
 
     public function ssgOfficials()
@@ -50,13 +50,13 @@ class WebsiteController extends Controller
     
     public function achievements()
     {
-        $achievements = Achievement::select('*');
+        $achievements = Achievement::orderBy('created_at', 'DESC')->get();
 
         $data = [
-            'achievements' => $achievements->get()
+            'achievements' => $achievements
         ];
-
-        return view('achievements.index', $data);
+        
+        return view('website.achievements', $data);
     }
 
     public function campusNews()
@@ -68,5 +68,15 @@ class WebsiteController extends Controller
         ];
         
         return view('website.campus_news', $data);
+    }
+
+    public function coursesOffered()
+    {
+        return view('website.courses_offered');
+    }
+
+    public function enrollmentProcedure()
+    {
+        return view('website.enrollment_procedure');
     }
 }

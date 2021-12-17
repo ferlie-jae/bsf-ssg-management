@@ -3,7 +3,7 @@
 
 @endsection
 @section('content')
-<div class="container mt-3">
+<div class="container mt-5 mb-5">
     <div class="row">
         <div class="col-lg-12">
             <div class="accordion" id="accordionExample">

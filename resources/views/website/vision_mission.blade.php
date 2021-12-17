@@ -1,6 +1,7 @@
 @extends('layouts.website')
 @section('content')
 <div class="container text-center mt-3 mb-5 pb-5">
+   
     <div class="row justify-content-center">
         <div class="col-md-8">
             <img class="img-fluid" width="250px" src="{{ asset('images/logo.png') }}" alt="">
@@ -35,4 +36,7 @@
         </div>
     </div>
 </div>
+@endsection
+@section('script')
+{{-- <script src="{{ asset('MDBootstrap-5-v2.0.0/src/js/mdb.pro.js') }}"></script> --}}
 @endsection

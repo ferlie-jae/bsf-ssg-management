@@ -10,58 +10,69 @@
   - <a href="https://git-scm.com/download/win" target="_blank">Git</a>
 - Open windows powershell or windows terminal.
 - Execute this on shell/terminal: 
-  ```
+  ```PowerShell
   cd C:/xampp/htdocs
   ```
 - Execute this on shell/terminal: 
-  ```
-  git clone https://github.com/ferliejay/bsf-ssg-management.git
+  ```PowerShell
+  git clone https://github.com/ferlie-jae/bsf-ssg-management.git
   ```
 - Execute this on shell/terminal: 
-  ```
+  ```PowerShell
   cd bsf-ssg-management
   ```
 - Execute this on shell/terminal: 
-  ```
+  ```PowerShell
   composer install
   ```
 - Execute this on shell/terminal: 
-  ```
+  ```PowerShell
   cp .env.example .env
   ```
 - Create database on http://localhost/phpmyadmin
   - Database Name: <code>bsf_ssg_management</code>
   - Collation: <code>utf8mb4_unicode_ci</code>
 - Execute this on shell/terminal: 
-  ```
+  ```PowerShell
   php artisan key:generate
   ```
 - Execute this on shell/terminal: 
-  ```
+  ```PowerShell
   php artisan config:cache
   ```
 - Execute this on shell/terminal: 
-  ```
+  ```PowerShell
   php artisan install
   ```
 - Execute this on shell/terminal: 
-  ```
+  ```PowerShell
   php artisan config:cache
   ```
 - Open <code>C:/xampp/apache/conf/extra/httpd-vhost.conf</code> and add
-  ```
+  ```ApacheConf
   <VirtualHost *:80>
       DocumentRoot "C:/xampp/htdocs/bsf-ssg-management/public"
       ServerName bsf-ssg-management.me
   </VirtualHost>
   ```
     and save.
-- Launch notepad as administrator and open <code>C:/Windows/System32/drivers/etc/hosts</code> file and add
+- Launch notepad as administrator and open <code>C:\Windows\System32\drivers\etc\hosts</code> file and add
     ```
-    127.0.0.1   bsf-ssg-management.me
+    127.0.0.1     bsf-ssg-management.me
     ```
     and save
 - Restart your Apache in XAMPP Control Panel.
 - Open your browser and copy this link http://bsf-ssg-management.me to access the Web Application. Your can login as System Administrator using the credential below:
   - Username: master
   - Password: admin
+
+<hr>
+
+For update just open windows powershell or windows terminal then execute the following
+```PowerShell
+  cd C:/xampp/htdocs/bsf-ssg-management
+```
+and
+```PowerShell
+  git pull
+```

@@ -29,7 +29,9 @@
                                 </button>
                             </h2>
                             <div id="announcement_{{ $announcement->id }}" class="accordion-collapse collapse @if($loop->first) show @endif" aria-labelledby="heading_{{ $announcement->id }}" data-mdb-parent="#accordionExample">
-                                <div class="accordion-body text-center">
+                                <div class="accordion-body">
+                                    <b>Published Date:</b> {{ date('F d, Y', strtotime($announcement->created_at)) }}
+                                    <hr>
                                     {!! $announcement->content !!}
                                 </div>
                             </div>

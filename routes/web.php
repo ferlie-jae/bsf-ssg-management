@@ -29,17 +29,18 @@ Route::get('homepage', 'WebsiteController@index')->name('website.index');
 Route::get('vision-mission', 'WebsiteController@visionMission')->name('website.vision_mission');
 Route::get('bsf-hmn', 'WebsiteController@bsfHymn')->name('website.bsf_hymn');
 Route::get('history', 'WebsiteController@history')->name('website.history');
+Route::get('bsf-achievements', 'WebsiteController@achievements')->name('website.achievements');
 Route::get('contact-us', 'WebsiteController@contactUs')->name('website.contact_us');
 Route::post('contact-us/submit', 'WebsiteController@submitContactUs')->name('website.submit_contact_us');
 Route::get('campus-officials', 'WebsiteController@campusOfficials')->name('website.campus_officials');
 Route::get('ssg-officials', 'WebsiteController@ssgOfficials')->name('website.ssg_officials');
 Route::get('campus-news', 'WebsiteController@campusNews')->name('website.campus_news');
-Route::get('courses-offered', 'WebsiteController@courses')->name('website.courses');
+Route::get('courses-offered', 'WebsiteController@coursesOffered')->name('website.courses');
 Route::get('enrollment-procedure', 'WebsiteController@enrollmentProcedure')->name('website.enrollment_procedure');
 
 
+Route::get('dashboard', 'HomeController@index')->name('dashboard');
 Route::group(array('middleware'=>['auth']), function() {
-	Route::get('dashboard', 'HomeController@index')->name('dashboard');
 
     /**
 	 * Roles and Permissions
