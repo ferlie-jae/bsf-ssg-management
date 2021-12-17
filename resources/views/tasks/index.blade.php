@@ -100,6 +100,7 @@
 </section>
 @endsection
 @section('script')
+@if(Auth::user()->isOfficer())
 <script src="{{ asset('AdminLTE-3.1.0/plugins/flot/jquery.flot.js') }}"></script>
 <script src="{{ asset('AdminLTE-3.1.0/plugins/flot/plugins/jquery.flot.resize.js') }}"></script>
 <script src="{{ asset('AdminLTE-3.1.0/plugins/flot/plugins/jquery.flot.pie.js') }}"></script>
@@ -162,4 +163,5 @@
 
     })
 </script>
+@endif
 @endsection
