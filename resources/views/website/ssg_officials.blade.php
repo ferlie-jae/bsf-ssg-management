@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="accordion" id="accordionExample">
-                @foreach ($elections as $election)
+                @forelse ($elections as $election)
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="heading_{{ $election->id }}">
                             <button class="accordion-button" type="button" data-mdb-toggle="collapse" data-mdb-target="#election_{{ $election->id }}" aria-expanded="true" aria-controls="collapseOne">
@@ -47,7 +47,21 @@
                             </div>
                         </div>
                     </div>
-                @endforeach
+                @empty
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <h1 class="text-center mt-5 mb-5">No SSG Officers yet</h1>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                @endforelse
             </div>
         </div>
     </div>
