@@ -42,24 +42,26 @@ Route::get('enrollment-procedure', 'WebsiteController@enrollmentProcedure')->nam
 Route::get('dashboard', 'HomeController@index')->name('dashboard');
 Route::group(array('middleware'=>['auth']), function() {
 
-    /**
-	 * Roles and Permissions
-	 */
-    /* Route::resource('roles', 'Configuration\RolePermission\RoleController');
-	// Route::get('/roles_get_data', 'Configuration\RolePermission\RoleController@get_data')->name('roles.get_data');
-	// restore
-	Route::post('roles/restore/{department}', [
-		'as' => 'roles.restore',
-		'uses' => 'Configuration\RolePermission\RoleController@restore'
-    ]); */
+	if(config('app.permissions') == true){
+		/**
+		 * Roles and Permissions
+		 */
+		Route::resource('roles', 'Configuration\RolePermission\RoleController');
+		// Route::get('/roles_get_data', 'Configuration\RolePermission\RoleController@get_data')->name('roles.get_data');
+		// restore
+		Route::post('roles/restore/{department}', [
+			'as' => 'roles.restore',
+			'uses' => 'Configuration\RolePermission\RoleController@restore'
+		]);
+	}
     
-    /* Route::resource('permissions', 'Configuration\RolePermission\PermissionController');
+    Route::resource('permissions', 'Configuration\RolePermission\PermissionController');
 	// Route::get('/permissions_get_data', 'Configuration\RolePermission\PermissionController@get_data')->name('permissions.get_data');
 	// restore
 	Route::post('permissions/restore/{department}', [
 		'as' => 'permissions.restore',
 		'uses' => 'Configuration\RolePermission\PermissionController@restore'
-	]); */
+	]);
 	
 	/**
 	 * Positions
@@ -85,6 +87,7 @@ Route::group(array('middleware'=>['auth']), function() {
 	 * Student
 	 */
 	Route::resource('students', 'StudentController');
+	Route::put('students_update_avatar/{student}', 'StudentController@changeAvatar')->name('students.change_avatar');
 	// restore
 	Route::post('students_restore/{position}', [
 		'as' => 'students.restore',
@@ -98,6 +101,7 @@ Route::group(array('middleware'=>['auth']), function() {
 		'faculties' => 'faculty'
 	]); */
 	Route::resource('faculties', 'FacultyController');
+	Route::put('faculties_update_avatar/{faculty}', 'FacultyController@changeAvatar')->name('faculties.change_avatar');
 	// restore
 	Route::post('faculties_restore/{position}', [
 		'as' => 'faculties.restore',
@@ -199,9 +203,12 @@ Route::group(array('middleware'=>['auth']), function() {
 		'as' => 'users.sidebar_collapse',
 		'uses' => 'UserController@sidebar_collapse'
 	]); */
-	// restore
 	Route::get('account/{user}', 'UserController@account')->name('account.index');
-	Route::put('account_update/{user}', 'UserController@updateAccount')->name('account.update');
+	Route::put('change_avatar/{user}', 'UserController@changeAvatar')->name('users.change_avatar');
+	Route::put('change_password/{user}', 'UserController@changePassword')->name('users.change_password');
+	Route::get('user_activate/{user}', 'UserController@activate')->name('users.activate');
+	Route::get('user_deactivate/{user}', 'UserController@deactivate')->name('users.deactivate');
+	// restore
 	Route::post('users_restore/{user}', [
 		'as' => 'users.restore',
 		'uses' => 'UserController@restore'

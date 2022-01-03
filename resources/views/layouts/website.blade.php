@@ -198,11 +198,11 @@
                             Contact
                         </h6>
                         <p>
-                            <i class="fas fa-location me-3"></i> Binmaley, Pangasinan
+                            <i class="fas fa-location me-3"></i> San Isidro Norte, Binmaley, Pangasinan
                         </p>
                         <p>
                             <i class="fas fa-envelope me-3"></i>
-                            info@example.com
+                            binmaleysof@gmail.com
                         </p>
                         <p>
                             <i class="fas fa-phone me-3"></i> (075) 540 0288

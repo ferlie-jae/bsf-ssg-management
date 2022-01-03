@@ -1,4 +1,9 @@
 /* Google Account */
+Name		: BSF SSG Management
+Email		: binsof.ssgmanagement2417@gmail.com
+Password	: ssgmanagement2417!
+
+/* Google Account */
 Name		: Ferlie Jae Bautista
 Email		: ferliejaebautista001@gmail.com
 Password	: binmaleymanagement0!

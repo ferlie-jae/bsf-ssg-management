@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Configuration\RolePermission\Role;
 use App\Models\User;
 use App\Models\UserFaculty;
-use App\Models\Configuration\Section;
-use App\Models\FacultySection;
+use App\Models\Section;
+use Image;
 
 class FacultyController extends Controller
 {
@@ -49,26 +49,11 @@ class FacultyController extends Controller
      */
     public function create()
     {
-        $roles = Role::select('*');
-		if(Auth::user()->hasrole('System Administrator')){
-			$roles = $roles;
-		}elseif(Auth::user()->hasrole('Administrator')){
-			$roles->where('id', '!=', 1)->get();
-		}else{
-			$roles->whereNotIn('id', [1,2]);
+        if(request()->ajax()){
+            return response()->json([
+                'modal_content' => view('faculties.create')->render()
+            ]);
         }
-        $data = ([
-			'roles' => $roles->get()
-		]);
-		/* if(!Auth::user()->hasrole('System Administrator')){
-			$data = ([
-				'faculty' => $faculty,
-			]);
-		} */
-
-		return response()->json([
-			'modal_content' => view('faculties.create', $data)->render()
-		]);
     }
 
     /**
@@ -82,10 +67,9 @@ class FacultyController extends Controller
         $request->validate([
 			'faculty_id' => ['required', 'unique:faculties,faculty_id'],
 			'first_name' => 'required',
-			'middle_name' => 'required',
+			// 'middle_name' => 'required',
 			'last_name' => 'required',
             'gender' => 'required',
-            'birth_date' => 'required',
             'contact_number' => ['unique:faculties,contact_number']
         ]);
 
@@ -93,28 +77,28 @@ class FacultyController extends Controller
 			'faculty_id' => $request->get('faculty_id'),
 			'first_name' => $request->get('first_name'),
 			'middle_name' => $request->get('middle_name'),
-			'last_name' => $request->get('last_name'),
+            'last_name' => $request->get('last_name'),
+            'suffix' => $request->get('suffix'),
 			'gender' => $request->get('gender'),
-			'birth_date' => $request->get('birth_date'),
 			'contact_number' => $request->get('contact_number'),
 			'address' => $request->get('address'),
         ]);
         
         if($request->get('add_user_account')){
             $request->validate([
-                'role' => ['required'],
-                'username' => ['required', 'string', 'max:255', 'unique:users,username'],
+                'username' => ['string', 'max:255', 'unique:users,username'],
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-                'password' => ['required', 'string', 'min:6', 'confirmed'],
+                /*'password' => ['required', 'string', 'min:6', 'confirmed'],*/
             ]);
-
+            $password = base64_encode(time());
             $user = User::create([
-                'username' => $request->get('username'),
+                'username' => $request->get('faculty_id'),
                 'email' => $request->get('email'),
-                'password' => Hash::make($request->get('password'))
+                'password' => Hash::make($password),
+                'temp_password' => $password,
             ]);
 
-            $user->assignRole($request->get('role'));
+            $user->assignRole(3);
 
             UserFaculty::create([
                 'user_id' => $user->id,
@@ -123,7 +107,7 @@ class FacultyController extends Controller
 
             
         }
-		return back()->with('alert-success', 'Saved');
+		return redirect()->route('faculties.index')->with('alert-success', 'Saved');
     }
 
     /**
@@ -134,33 +118,7 @@ class FacultyController extends Controller
      */
     public function show(Faculty $faculty)
     {
-        if($faculty->user){
-            $data = ([
-                'faculty_show' => $faculty,
-            ]);
-        }else{
-            $roles = Role::select('*');
-            if(Auth::user()->hasrole('System Administrator')){
-                $roles = $roles;
-            }elseif(Auth::user()->hasrole('Administrator')){
-                $roles->where('id', '!=', 1)->get();
-            }else{
-                $roles->whereNotIn('id', [1,2]);
-            }
-            $data = ([
-                'faculty_show' => $faculty,
-                'roles' => $roles->get(),
-            ]);
-        }
-		/* if(!Auth::user()->hasrole('System Administrator')){
-			$data = ([
-				'faculty' => $faculty,
-			]);
-		} */
-
-		return response()->json([
-			'modal_content' => view('faculties.show', $data)->render()
-		]);
+		return view('faculties.show', compact('faculty'));
     }
 
     /**
@@ -171,23 +129,14 @@ class FacultyController extends Controller
      */
     public function edit(Faculty $faculty)
     {
-        $roles = Role::select('*');
-		if(Auth::user()->hasrole('System Administrator')){
-			$roles = $roles;
-		}elseif(Auth::user()->hasrole('Administrator')){
-			$roles->where('id', '!=', 1)->get();
-		}else{
-			$roles->whereNotIn('id', [1,2]);
+        if(request()->ajax()){
+            $data = ([
+                'faculty' => $faculty,
+            ]);
+            return response()->json([
+                'modal_content' => view('faculties.edit', $data)->render()
+            ]);
         }
-        $data = ([
-            'faculty_edit' => $faculty,
-			'roles' => $roles->get(),
-			'sections' => Section::get()
-        ]);
-        
-        return response()->json([
-			'modal_content' => view('faculties.edit', $data)->render()
-		]);
     }
 
     /**
@@ -202,10 +151,9 @@ class FacultyController extends Controller
         $request->validate([
 			'faculty_id' => ['required', 'unique:faculties,faculty_id,'.$faculty->id],
 			'first_name' => 'required',
-			'middle_name' => 'required',
+			// 'middle_name' => 'required',
 			'last_name' => 'required',
             'gender' => 'required',
-            'birth_date' => 'required',
             'contact_number' => ['unique:faculties,contact_number,'.$faculty->id]
         ]);
 
@@ -214,13 +162,13 @@ class FacultyController extends Controller
 			'first_name' => $request->get('first_name'),
 			'middle_name' => $request->get('middle_name'),
 			'last_name' => $request->get('last_name'),
+			'suffix' => $request->get('suffix'),
 			'gender' => $request->get('gender'),
-			'birth_date' => $request->get('birth_date'),
 			'contact_number' => $request->get('contact_number'),
 			'address' => $request->get('address'),
         ]);
 
-        return back()->with('alert-success', 'Saved');
+        return redirect()->route('faculties.show', $faculty->id)->with('alert-success', 'Saved');
     }
 
     /**
@@ -231,20 +179,41 @@ class FacultyController extends Controller
      */
     public function destroy(Faculty $faculty)
 	{
-		if (request()->get('permanent')) {
-			$faculty->forceDelete();
-		}else{
-			$faculty->delete();
-		}
-		return back()->with('alert-danger','Deleted');
-		// return redirect()->route('users.index')->with('alert-danger','User successfully deleted');
+        if($faculty->id > 1){
+            if (request()->get('permanent')) {
+                $faculty->forceDelete();
+            }else{
+                $faculty->delete();
+            }
+            return redirect()->route('faculties.index')->with('alert-danger','Deleted');
+        }else{
+            return redirect()->route('faculties.index')->with('alert-waring','You cannot delete the data of System Administrator');
+        }
 	}
 
 	public function restore($faculty)
 	{
 		$faculty = Faculty::withTrashed()->find($faculty);
 		$faculty->restore();
-		return back()->with('alert-success','Restored');
-		// return redirect()->route('users.index')->with('alert-success','User successfully restored');
-	}
+		return redirect()->route('faculties.index')->with('alert-success','Restored');
+    }
+
+    public function changeAvatar(Request $request, Faculty $faculty)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg'
+        ]);
+        $avatar= $request->file('image');
+        $thumbnailImage = Image::make($avatar);
+
+        $storagePath = 'images/faculty';
+        $fileName = $faculty->id . '_' . date('m-d-Y H.i.s') . '.' . $avatar->getClientOriginalExtension();
+        $myimage = $thumbnailImage->fit(500);
+        $myimage->save($storagePath . '/' .$fileName);
+        $faculty->update([
+            'image' => $fileName
+        ]);
+        return redirect()->route('faculties.show', $faculty->id)->with('alert-success', 'Saved');
+    }
+    
 }

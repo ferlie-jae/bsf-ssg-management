@@ -21,6 +21,7 @@ class Student extends Model
         'first_name',
         'middle_name',
         'last_name',
+        'suffix',
         'gender',
         'birth_date',
         'contact_number',
@@ -28,7 +29,7 @@ class Student extends Model
     ];
 
     public function section() {
-        return $this->hasOne('App\Models\StudentSection', 'student_id');
+        return $this->hasOne('App\Models\StudentSection', 'student_id')->withTrashed();
     }
 
     public function user() {
@@ -38,23 +39,6 @@ class Student extends Model
     public function tasks()
     {
         return $this>hasMany('App\Models\Task', 'student_id');
-    }
-
-    public function getStudentName()
-	{
-		$student = self::find($this->id);
-        $name = $student->first_name.' '.
-            (is_null($student->middle_name) ? '' : $student->middle_name[0].'. ').
-            $student->last_name;
-		return $name;
-    }
-    public function getStudentNameLNF()
-	{
-		$student = self::find($this->id);
-        $name = $student->last_name.', '.
-        $student->first_name.' '.
-        (is_null($student->middle_name) ? '' : $student->middle_name[0].'.');
-		return $name;
     }
 
     /** 
@@ -75,7 +59,7 @@ class Student extends Model
                         $name .= $this->first_name;
                     break;
                 case 'm':
-                    if(!is_null($this->middle_name) && $this->middle_name!=''){
+                    if(!is_null($this->middle_name)){
                         if($i == 1){
                             $name .= ' '.$this->middle_name[0].'. ';
                         }else{
@@ -84,10 +68,12 @@ class Student extends Model
                     }
                     break;
                 case 'M':
-                    if($i == 1){
-                        $name .= ' '.$this->middle_name.' ';
-                    }elseif($i == 2){
-                        $name .= ' '.$this->middle_name;
+                    if(!is_null($this->middle_name) || $this->middle_name==''){
+                        if($i == 1){
+                            $name .= ' '.$this->middle_name.' ';
+                        }elseif($i == 2){
+                            $name .= ' '.$this->middle_name;
+                        }
                     }
                     break;
                 case 'l':
@@ -97,12 +83,20 @@ class Student extends Model
                         $name .= ' '.$this->last_name;
                     }
                     break;
+                /* case 'a':
+                    if($i == 0){
+                        $name .= $this->affiliation.', ';
+                    }elseif($i == 2){
+                        $name .= ' '.$this->affiliation;
+                    }
+                    break; */
                 
                 default:
-                $name = $this->first_name.' '.
-                    ((is_null($this->middle_name) && $this->middle_name!='') ? '' : $this->middle_name[0].'. ').
-                    $this->last_name;
-                    break;
+                    $name = $this->first_name.' '.
+                        ((is_null($this->middle_name) || $this->middle_name=='') ? '' : $this->middle_name[0].'. ').
+                        $this->last_name.
+                        (is_null($this->suffix) ? '' : ', '.$this->suffix);
+                        break;
             }
         }
 		
@@ -212,5 +206,14 @@ class Student extends Model
                 ['position_id', $position->id],
             ])->get();
         }
+    }
+
+    public function avatar()
+    {
+        $avatar = 'images/'.$this->gender.'.jpg';
+        if(!is_null($this->image)){
+            $avatar = 'images/student/'.$this->image;
+        }
+        return $avatar;
     }
 }

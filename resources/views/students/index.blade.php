@@ -41,9 +41,16 @@
                                             <div class="card card-info  card-outline">
                                                 <a class="d-block" data-toggle="collapse" href="#section-{{ $section->id }}-students">
                                                     <div class="card-header d-flex p-0">
-                                                        <h4 class="card-title p-3 text-dark">
-                                                            {{ $section->name }}
-                                                        </h4>
+                                                        <div class="col-md-6">
+                                                            <h4 class="card-title p-3 text-dark">
+                                                                {{ $section->name }}
+                                                            </h4>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <h6 class="p-3 text-dark text-right">
+                                                                ({{ $section->students->count() }} Students)
+                                                            </h6>
+                                                        </div>
                                                     </div>
                                                 </a>
                                                 <div id="section-{{ $section->id }}-students" class="collapse" data-parent="#accordion-{{ $section->id }}">
@@ -69,7 +76,7 @@
                                                                 @php
                                                                     $student = $student->student;
                                                                 @endphp
-                                                                <tr @unlessrole('System Administrator') @can('students.show') data-toggle="modal-ajax" data-target="#showStudent" data-href="{{ route('students.show', $student->id) }}"  @endcan @else class="{{ $student->trashed() ? 'table-danger' : '' }}" @endunlessrole>
+                                                                <tr @unlessrole('System Administrator') @can('students.show') data-toggle="tr-link" data-href="{{ route('students.show', $student->id) }}"  @endcan @else class="{{ $student->trashed() ? 'table-danger' : '' }}" @endunlessrole>
                                                                     <td>{{ $index+1 }}</td>
                                                                     <td>
                                                                         @isset ($student->user)
@@ -91,10 +98,10 @@
                                                                     <td>{{ $student->last_name }}</td>
                                                                     @role('System Administrator')
                                                                         <td class="text-center">
-                                                                            <a href="javascript:void(0)" data-toggle="modal-ajax" data-target="#showStudent" data-href="{{ route('students.show',$student->id) }}"><i class="fad fa-file fa-lg"></i></a>
                                                                             @if ($student->trashed())
                                                                                 <a class="text-success" href="javascript:void(0)" onclick="restoreFromTable(this)" data-href="{{ route('students.restore', $student->id) }}"><i class="fad fa-download fa-lg"></i></a>
                                                                             @else
+                                                                                <a href="{{ route('students.show',$student->id) }}"><i class="fad fa-file fa-lg"></i></a>
                                                                                 <a class="text-danger" href="javascript:void(0)" onclick="deleteFromTable(this)" data-href="{{ route('students.destroy', $student->id) }}"><i class="fad fa-trash-alt fa-lg"></i></a>
                                                                             @endif
                                                                         </td>

@@ -4,6 +4,7 @@ namespace App\Models\Configuration;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Auth;
 
 class Section extends Model
 {
@@ -18,6 +19,9 @@ class Section extends Model
 
     public function students()
     {
+        if(Auth::user()->hasrole('System Administrator')){
+            return $this->hasMany('App\Models\StudentSection', 'section_id')->withTrashed();
+        }
         return $this->hasMany('App\Models\StudentSection', 'section_id');
     }
 

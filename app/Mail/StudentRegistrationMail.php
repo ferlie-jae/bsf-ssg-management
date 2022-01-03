@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Mail;
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Mail\Mailable;
+use Illuminate\Queue\SerializesModels;
+use App\Models\User;
+
+class StudentRegistrationMail extends Mailable
+{
+    use Queueable, SerializesModels;
+
+    public $student;
+
+    /**
+     * Create a new message instance.
+     *
+     * @return void
+     */
+    public function __construct(User $user)
+    {
+        $this->student = $user->student->student;
+    }
+
+    /**
+     * Build the message.
+     *
+     * @return $this
+     */
+    public function build()
+    {
+        $data = [
+            'student' => $this->student
+        ];
+        return $this->subject('Registration')
+            ->view('mail.student_registration', $data);
+    }
+}

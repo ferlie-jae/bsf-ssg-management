@@ -216,14 +216,16 @@
                                 </a>
                             </li>
                             @endcan
-                            {{-- @can('roles.index')
-                            <li class="nav-item">
-                                <a href="{{ route('roles.index') }}" class="nav-link">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>Roles/Permissions</p>
-                                </a>
-                            </li>
-                            @endcan --}}
+                            @if(config('app.permissions') == true)
+                                @can('roles.index')
+                                <li class="nav-item">
+                                    <a href="{{ route('roles.index') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Roles/Permissions</p>
+                                    </a>
+                                </li>
+                                @endcan
+                            @endif
                         </ul>
                     </li>
                     @endcanany

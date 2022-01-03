@@ -14,11 +14,11 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label>Student ID:</label><br>
+                                <label>Student ID: <strong class="text-danger">*</strong></label><br>
                                 <input class="form-control" type="text" name="student_id" required value="{{ $student_edit->student_id }}">
                             </div>
                             <div class="form-group">
-                                <label>Year/Section:</label><br>
+                                <label>Year/Section: <strong class="text-danger">*</strong></label><br>
                                 <select class="form-control select2" name="section" required>
                                     <option></option>
                                     @foreach ($sections as $section)
@@ -30,41 +30,45 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>First Name:</label><br>
+                                <label>First Name: <strong class="text-danger">*</strong></label><br>
                                 <input class="form-control" type="text" name="first_name" value="{{ $student_edit->first_name }}" required>
                             </div>
                             <div class="form-group">
                                 <label>Middle Name:</label><br>
-                                <input class="form-control" type="text" name="middle_name" value="{{ $student_edit->middle_name }}" required>
+                                <input class="form-control" type="text" name="middle_name" value="{{ $student_edit->middle_name }}">
                             </div>
                             <div class="form-group">
-                                <label>Last Name:</label><br>
+                                <label>Last Name: <strong class="text-danger">*</strong></label><br>
                                 <input class="form-control" type="text" name="last_name" value="{{ $student_edit->last_name }}" required>
                             </div>
                             <div class="form-group">
-                                <label>Gender:</label><br>
+                                <label>Suffix:</label><br>
+                                <input class="form-control" type="text" name="suffix" value="{{ $student_edit->suffix }}">
+                            </div>
+                            <div class="form-group">
+                                <label>Gender: <strong class="text-danger">*</strong></label><br>
                                 <div class="form-row">
                                     <div class="radio col-md-4">
                                         <div class="custom-control custom-radio">
-                                            <input required type="radio" class="custom-control-input" name="gender" value="Male" id="male" @if($student_edit->gender == 'Male') checked @endif>
+                                            <input type="radio" class="custom-control-input" name="gender" value="male" id="male" @if($student_edit->gender == 'male') checked @endif required>
                                             <label class="custom-control-label" for="male">Male</label>
                                         </div>
                                     </div>
                                     <div class="radio col-md-4">
                                         <div class="custom-control custom-radio">
-                                            <input required type="radio" class="custom-control-input" name="gender" value="Female" id="female" @if($student_edit->gender == 'Female') checked @endif>
+                                            <input type="radio" class="custom-control-input" name="gender" value="female" id="female" @if($student_edit->gender == 'female') checked @endif required>
                                             <label class="custom-control-label" for="female">Female</label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label>Birth Date:</label><br>
+                                <label>Birth Date: <strong class="text-danger">*</strong></label><br>
                                 <input class="form-control" type="date" name="birth_date" value="{{ $student_edit->birth_date }}" required>
                             </div>
                             <div class="form-group">
                                 <label>Contact #:</label><br>
-                                <input class="form-control" type="text" name="contact_number" value="{{ $student_edit->contact_number }}">
+                                <input class="form-control" type="tel" pattern="^(09|\+639)\d{9}$" name="contact_number" value="{{ $student_edit->contact_number }}">
                             </div>
                             <div class="form-group">
                                 <label>Address:</label>

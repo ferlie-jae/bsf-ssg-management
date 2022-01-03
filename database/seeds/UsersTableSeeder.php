@@ -19,7 +19,7 @@ class UsersTableSeeder extends Seeder
 			'first_name' => "Ferlie Jae",
 			'middle_name' => "D",
 			'last_name' => "Bautista",
-			'gender' => "Male",
+			'gender' => "male",
 			'birth_date' => "1999-12-25",
 			'contact_number' => "09123456001",
         ]);
@@ -29,19 +29,21 @@ class UsersTableSeeder extends Seeder
 			'first_name' => "Apple Rose",
 			'middle_name' => "D",
 			'last_name' => "Corpuz",
-			'gender' => "Female",
+			'gender' => "female",
 			'birth_date' => "1999-07-27",
 			'contact_number' => "09123456789",
         ]);
 
         $system_admin_user = User::create([
             'username' => 'master',
+            'is_verified' => 1,
             'email' => 'ferliejaebautista001@gmail.com',
             'password' => bcrypt('admin')
         ]);
 
         $admin_user = User::create([
             'username' => 'admin',
+            'is_verified' => 1,
             'email' => 'ar.corpuz00@gmail.com',
             'password' => bcrypt('admin')
         ]);

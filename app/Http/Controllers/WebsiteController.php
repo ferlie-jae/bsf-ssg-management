@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Achievement;
 use App\Models\Announcement;
 use App\Models\Election;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ContactUsMail;
 
 class WebsiteController extends Controller
 {
@@ -32,6 +34,13 @@ class WebsiteController extends Controller
     public function contactUs()
     {
         return view('website.contact_us');
+    }
+
+    public function submitContactUs(Request $request)
+    {
+        Mail::to(config('mail.from.address'))->send(new ContactUsMail($request));
+
+        return back()->with('alert-success', 'Message Send');
     }
 
     public function campusOfficials()

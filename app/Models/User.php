@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Announcement;
+use Auth;
 
 class User extends Authenticatable
 {
@@ -21,10 +22,12 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'image',
+        'avatar',
+        'is_verified',
         'username',
         'email',
         'password',
+        'temp_password',
     ];
 
     /**
@@ -48,6 +51,25 @@ class User extends Authenticatable
     public function role()
 	{
 		return $this->belongsTo('App\Models\Configuration\RolePermission\UserRole', 'id', 'model_id');
+    }
+
+    public function userInfo()
+    {
+        if(isset($this->student->id)){
+            if(Auth::user()->hasrole('System Administrator')){
+                return Student::withTrashed()->find($this->student->student_id);
+            }else{
+                return $this->student->student;
+            }
+        }
+        if(isset($this->faculty->id)){
+            if(Auth::user()->hasrole('System Administrator')){
+                return Faculty::withTrashed()->find($this->faculty->faculty_id);
+            }else{
+                return $this->faculty->faculty;
+            }
+        }
+        return false;
     }
     
     public function student(){
@@ -82,10 +104,10 @@ class User extends Authenticatable
     public function avatar()
     {
         $avatar = "";
-        if(is_null($this->image)){
+        if(is_null($this->avatar)){
             $avatar = "images/user/default/male.jpg";
         }else{
-            $avatar = "images/user/uploads/".$this->image;
+            $avatar = "images/user/avatar/".$this->avatar;
         }
         return $avatar;
     }

@@ -81,7 +81,7 @@ class StudentController extends Controller
         $request->validate([
 			'student_id' => ['required', 'unique:students,student_id'],
 			'first_name' => 'required',
-			'middle_name' => 'required',
+			// 'middle_name' => 'required',
 			'last_name' => 'required',
             'gender' => 'required',
             'birth_date' => 'required',
@@ -93,6 +93,7 @@ class StudentController extends Controller
 			'first_name' => $request->get('first_name'),
 			'middle_name' => $request->get('middle_name'),
 			'last_name' => $request->get('last_name'),
+			'suffix' => $request->get('suffix'),
 			'gender' => $request->get('gender'),
 			'birth_date' => date('Y-m-d', strtotime($request->get('birth_date'))),
 			'contact_number' => $request->get('contact_number'),
@@ -106,25 +107,22 @@ class StudentController extends Controller
         
         if($request->get('add_user_account')){
             $request->validate([
-                'role' => ['required'],
-                'username' => ['required', 'string', 'max:255', 'unique:users,username'],
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-                'password' => ['required', 'string', 'min:6', 'confirmed'],
             ]);
-
+            $password = base64_encode(time());
             $user = User::create([
-                'username' => $request->get('username'),
+                'username' => $request->get('student_id'),
                 'email' => $request->get('email'),
-                'password' => Hash::make($request->get('password'))
+                'password' => Hash::make($password),
+                'temp_password' => $password
             ]);
 
-            $user->assignRole($request->get('role'));
+            $user->assignRole(4);
 
             UserStudent::create([
                 'user_id' => $user->id,
                 'student_id' => $student->id
             ]);
-
             
         }
 		return back()->with('alert-success', 'Saved');
@@ -138,29 +136,7 @@ class StudentController extends Controller
      */
     public function show(Student $student)
     {
-        if($student->user){
-            $data = ([
-                'student_show' => $student,
-            ]);
-        }else{
-            $roles = Role::select('*');
-            if(Auth::user()->hasrole('System Administrator')){
-                $roles = $roles;
-            }elseif(Auth::user()->hasrole('Administrator')){
-                $roles->where('id', '!=', 1)->get();
-            }else{
-                $roles->whereNotIn('id', [1,2]);
-            }
-            $data = ([
-                'student_show' => $student,
-                'roles' => $roles->get(),
-            ]);
-        }
-
-		return response()->json([
-			'modal_content' => view('students.show', $data)->render()
-        ]);
-        
+		return view('students.show', compact('student'));
     }
 
     /**
@@ -202,7 +178,7 @@ class StudentController extends Controller
         $request->validate([
 			'student_id' => ['required', 'unique:students,student_id,'.$student->id],
 			'first_name' => 'required',
-			'middle_name' => 'required',
+			// 'middle_name' => 'required',
 			'last_name' => 'required',
             'gender' => 'required',
             'birth_date' => 'required',
@@ -214,6 +190,7 @@ class StudentController extends Controller
 			'first_name' => $request->get('first_name'),
 			'middle_name' => $request->get('middle_name'),
 			'last_name' => $request->get('last_name'),
+			'suffix' => $request->get('suffix'),
             'gender' => $request->get('gender'),
             'birth_date' => date('Y-m-d', strtotime($request->get('birth_date'))),
 			'contact_number' => $request->get('contact_number'),

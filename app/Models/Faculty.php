@@ -14,6 +14,7 @@ class Faculty extends Model
         'first_name',
         'middle_name',
         'last_name',
+        'suffix',
         'gender',
         'birth_date',
         'contact_number',
@@ -36,10 +37,16 @@ class Faculty extends Model
 		return $name;
     }
     
+    /** 
+     * $format = 'f-m-l'
+     * $format = 'l-f-m'
+     * $format = 'l-f-M'
+     */
     public function fullname($format)
 	{
         $format = explode('-', $format);
         $name = "";
+        $trashedBadge = "";
         for ($i=0; $i < count($format); $i++) { 
             switch ($format[$i]) {
                 case 'f':
@@ -49,17 +56,21 @@ class Faculty extends Model
                         $name .= $this->first_name;
                     break;
                 case 'm':
-                    if($i == 1){
-                        $name .= ' '.$this->middle_name[0].'. ';
-                    }else{
-                        $name .= ' '.$this->middle_name[0].'. ';
+                    if(!is_null($this->middle_name)){
+                        if($i == 1){
+                            $name .= ' '.$this->middle_name[0].'. ';
+                        }else{
+                            $name .= ' '.$this->middle_name[0].'. ';
+                        }
                     }
                     break;
                 case 'M':
-                    if($i == 1){
-                        $name .= ' '.$this->middle_name.' ';
-                    }elseif($i == 2){
-                        $name .= ' '.$this->middle_name;
+                    if(!is_null($this->middle_name) || $this->middle_name==''){
+                        if($i == 1){
+                            $name .= ' '.$this->middle_name[0].'. ';
+                        }else{
+                            $name .= ' '.$this->middle_name[0].'. ';
+                        }
                     }
                     break;
                 case 'l':
@@ -69,15 +80,34 @@ class Faculty extends Model
                         $name .= ' '.$this->last_name;
                     }
                     break;
+                case 's':
+                    // if($i == 3){
+                        $name .= $this->suffix;
+                    // }
+                    break;
                 
                 default:
                 $name = $this->first_name.' '.
-                    (is_null($this->middle_name) ? '' : $this->middle_name[0].'. ').
-                    $this->last_name;
+                ((is_null($this->middle_name) || $this->middle_name=='')  ? '' : $this->middle_name[0].'. ').
+                    $this->last_name.
+				    ' '.$this->suffix;
                     break;
             }
         }
+
+        if($this->trashed()){
+            $trashedBadge .= ' <span class="badge badge-danger">Deleted</span>';
+        }
 		
-		return $name;
+		return $name.$trashedBadge;
+    }
+
+    public function avatar()
+    {
+        $avatar = 'images/'.$this->gender.'.jpg';
+        if(!is_null($this->image)){
+            $avatar = 'images/faculty/'.$this->image;
+        }
+        return $avatar;
     }
 }

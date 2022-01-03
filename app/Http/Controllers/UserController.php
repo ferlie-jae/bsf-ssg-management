@@ -12,6 +12,10 @@ use App\Models\UserStudent;
 use Carbon\Carbon;
 use Auth;
 use Image;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AccountActivatedMail;
+use App\Mail\AccountDeactivatedMail;
+use App\Mail\StudentRegistrationMail;
 
 class UserController extends Controller
 {
@@ -81,31 +85,37 @@ class UserController extends Controller
     {
         $request->validate([
 			'user_id' => ['required'],
-			'role' => ['required'],
 			'username' => ['required', 'string', 'max:255', 'unique:users,username'],
 			'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-			'password' => ['required', 'string', 'min:6', 'confirmed'],
         ]);
-        
-		$user = User::create([
-			'username' => $request->get('username'),
-			'email' => $request->get('email'),
-			'password' => Hash::make($request->get('password')),
-        ]);
-        
-        $user->assignRole($request->role);
-        
+        $password = base64_encode(time());
         if($request->get('type') == 'student') {
+            $user = User::create([
+                'username' => $request->get('username'),
+                'email' => $request->get('email'),
+                'password' => Hash::make($password),
+                'temp_password' => $password,
+            ]);
+            $user->assignRole(4);
             UserStudent::create([
                 'user_id' => $user->id,
                 'student_id' => $request->get('user_id')
             ]);
+            Mail::to($user->email)->send(new StudentRegistrationMail($user));
         }else{
+            $user = User::create([
+                'username' => $request->get('username'),
+                'email' => $request->get('email'),
+                'password' => Hash::make($password),
+                'temp_password' => $password,
+            ]);
+            $user->assignRole(3);
             UserFaculty::create([
                 'user_id' => $user->id,
                 'faculty_id' => $request->get('user_id')
             ]);
         }
+        
 		return back()->with('alert-success', 'Saved');
     }
 
@@ -124,6 +134,8 @@ class UserController extends Controller
             return response()->json([
                 'modal_content' => view('users.show', $data)->render()
             ]);
+        }else{
+            return view('users.show', compact('user'));
         }
     }
 
@@ -232,48 +244,84 @@ class UserController extends Controller
         return view('users.account', $data);
     }
 
-    public function updateAccount(Request $request, User $user)
+    public function changeAvatar(Request $request, User $user)
     {
-        $this->updateProfileImage($request, $user);
-        if(!is_null($request->get('old_password'))){
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg'
+        ]);
+        $avatar= $request->file('image');
+        $thumbnailImage = Image::make($avatar);
+
+        $storagePath = 'images/user/avatar';
+        $fileName = $user->id . '_' . date('m-d-Y H.i.s') . '.' . $avatar->getClientOriginalExtension();
+        $myimage = $thumbnailImage->fit(500);
+        // Storage::disk('upload')->putFileAs('images/rooms', $request->file('image'), $fileName);
+        $myimage->save($storagePath . '/' .$fileName);
+        $user->update([
+            'avatar' => $fileName
+        ]);
+        /* $file = $request->file('image');
+        $fileName = $request->get('name') . '_' . date('m-d-Y H.i.s') . '.' . $file->getClientOriginalExtension();
+        Storage::disk('upload')->putFileAs('images/rooms', $request->file('image'), $fileName);
+        $user->update([
+            'image' => $fileName
+        ]); */
+        return redirect()->route('account.index', $user->id)->with('alert-success', 'Avatar changed successfully');
+    }
+
+    public function changePassword(Request $request, User $user)
+    {
+        if(Auth::user()->hasrole('System Administrator')){
+            $request->validate([
+                'new_password' => 'confirmed|min:8'
+            ]);
+            
+            $user->update([
+                'password' => Hash::make($request->get('new_password'))
+            ]);
+
+            return back()->with('alert-success', 'Password changed successfully');
+        }else{
             if(Hash::check($request->get('old_password'), $user->password)){
                 $request->validate([
                     'old_password' => 'required',
-                    'new_password' => 'required|confirmed|min:8|different:old_password'
+                    'new_password' => 'confirmed|min:8|different:old_password'
                 ]);
+                
                 $user->update([
                     'password' => Hash::make($request->get('new_password'))
                 ]);
-                return redirect()->route('account.index', $user->id)->with('alert-success', 'Password Changed');
+    
+                return redirect()->route('account.index', $user->id)->with('alert-success', 'Password changed successfully');
             }else{
-                return redirect()->route('account.index', $user->id)->with('alert-warning', 'Old Password is incorrect');
+                return redirect()->route('account.index', $user->id)->with('alert-success', 'Incorrect old password');
             }
-        }
-        else{
-            return redirect()->route('account.index', $user->id)->with('alert-success', 'Saved');
         }
     }
 
-    public function updateProfileImage($request ,$user)
+    public function activate(User $user)
     {
-        if($request->file('image')){
-            $avatar= $request->file('image');
-            $thumbnailImage = Image::make($avatar);
+        $password = base64_encode(time());
+        $user->update([
+            'is_verified' => 1,
+            // 'is_first_login' => 1,
+            'password' => Hash::make($password),
+            'temp_password' => $password,
+        ]);
+        Mail::to($user->email)->send(new AccountActivatedMail($user));
+        return redirect()->route('users.show', $user->id)->with('alert-success', 'saved');
+    }
 
-            $storagePath = 'images/user/uploads';
-            $fileName = $user->id . '_' . date('m-d-Y H.i.s') . '.' . $avatar->getClientOriginalExtension();
-            $myimage = $thumbnailImage->fit(500);
-            // Storage::disk('upload')->putFileAs('images/rooms', $request->file('image'), $fileName);
-            $myimage->save($storagePath . '/' .$fileName);
-            $user->update([
-                'image' => $fileName
-            ]);
-            /* $file = $request->file('image');
-            $fileName = $request->get('name') . '_' . date('m-d-Y H.i.s') . '.' . $file->getClientOriginalExtension();
-            Storage::disk('upload')->putFileAs('images/rooms', $request->file('image'), $fileName);
-            $user->update([
-                'image' => $fileName
-            ]); */
-        }
+    public function deactivate(User $user)
+    {
+        $password = base64_encode(time());
+        Mail::to($user->email)->send(new AccountDeactivatedMail($user));
+        $user->update([
+            'is_verified' => 0,
+            // 'is_first_login' => 1,
+            'password' => Hash::make($password),
+            'temp_password' => null,
+        ]);
+        return redirect()->route('users.show', $user->id)->with('alert-success', 'saved');
     }
 }
