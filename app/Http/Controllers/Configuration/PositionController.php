@@ -67,7 +67,7 @@ class PositionController extends Controller
             'name' => $request->get('name'),
             'candidate_to_elect' => $request->get('candidate_to_elect'),
         ]);
-        return redirect()->route('positions.show')->with('alert-success', 'Saved');
+        return redirect()->route('positions.index')->with('alert-success', 'Saved');
         
     }
 

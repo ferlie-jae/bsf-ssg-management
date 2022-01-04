@@ -30,7 +30,7 @@
                             </h2>
                             <div id="achievement_{{ $achievement->id }}" class="accordion-collapse collapse @if($loop->first) show @endif" aria-labelledby="heading_{{ $achievement->id }}" data-mdb-parent="#accordionExample">
                                 <div class="accordion-body">
-                                    <b>Published Date:</b> {{ date('F d, Y', strtotime($announcement->created_at)) }}
+                                    <b>Published Date:</b> {{ date('F d, Y', strtotime($achievement->created_at)) }}
                                     <hr>
                                     {!! $achievement->content !!}
                                 </div>
