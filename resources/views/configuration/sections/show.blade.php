@@ -33,7 +33,7 @@
                                         {{ $student->student->student_id }}
                                     </td>
                                     <td>
-                                        {{ $student->student->getStudentName($student->student_id) }}
+                                        {{ $student->student->fullname('') }}
                                     </td>
                                 </tr>
                                 @empty

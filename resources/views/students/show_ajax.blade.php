@@ -2,7 +2,7 @@
 	<div class="modal-dialog modal-lg modal-dialog-scrollable">
 		<div class="modal-content">
 			<div class="modal-header">
-	          <h4 class="modal-title">{{ $student_show->getStudentName() }}</h4>
+	          <h4 class="modal-title">{{ $student_show->fullname('') }}</h4>
 	          <button type="button" class="close" data-dismiss="modal-ajax" aria-hidden="true">&times;</button>
 	    	</div>
 			<div class="modal-body">

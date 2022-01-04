@@ -58,7 +58,7 @@
                                         <select class="form-control candidates-select2" name="candidates[{{ $position->id}}][]" data-position-id="{{ $position->id}}" style="width: 100%">
                                             <option></option>
                                             @foreach ($students as $student)
-                                                <option value="{{ $student->id }}">{{ $student->getStudentNameLNF() }}</option>
+                                                <option value="{{ $student->id }}">{{ $student->fullname('') }}</option>
                                             @endforeach
                                         </select>
                                     </div>

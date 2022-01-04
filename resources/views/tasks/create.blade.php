@@ -18,7 +18,7 @@
                                     <option></option>
                                     @foreach ($officers as $officer)
                                         <option value="{{ $officer->student_id }}">
-                                            [{{ $officer->position->name }}] {{ $officer->student->getStudentName() }}
+                                            [{{ $officer->position->name }}] {{ $officer->student->fullname('') }}
                                         </option>
                                     @endforeach
                                 </select>

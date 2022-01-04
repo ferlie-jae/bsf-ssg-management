@@ -76,7 +76,7 @@
                                     {{ $task->is_done ? "Done" : "Not yet done" }}
                                 </td>
                                 <td>{{ $task->student->getPosition() }}</td>
-                                <td>{{ $task->student->getStudentName() }}</td>
+                                <td>{{ $task->student->fullname('') }}</td>
                                 <td>{{ $task->task }}</td>
                                 <td>{{ $task->description }}</td>
                                 @role('System Administrator')

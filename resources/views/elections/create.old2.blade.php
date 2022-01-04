@@ -79,7 +79,7 @@
                                         <select class="form-control candidates-select2" name="candidates[{{ $position->id}}][]" data-id="0" data-position-id="{{ $position->id}}" onchange="updateCandidateSelection(this)">
                                             <option></option>
                                             @foreach ($students as $student)
-                                                <option value="{{ $student->id }}">{{ $student->getStudentNameLNF() }}</option>
+                                                <option value="{{ $student->id }}">{{ $student->fullname('') }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -178,7 +178,7 @@
                         '<select class="form-control candidates-select2" name="candidates['+positionID+'][]" data-id="'+dataID+'" data-position-id="'+positionID+'" onchange="updateCandidateSelection(this)">' +
                             '<option></option>' +
                             @foreach ($students as $student)
-                                '<option value="{{ $student->id }}">{{ $student->getStudentNameLNF() }}</option>' +
+                                '<option value="{{ $student->id }}">{{ $student->fullname("") }}</option>' +
                             @endforeach
                         '</select>' +
                     '</div>' +

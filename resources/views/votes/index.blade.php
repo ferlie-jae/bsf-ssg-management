@@ -37,9 +37,9 @@
                                 <td>{{ $vote->vote_number }}</td>
                                 <td>
                                     @if($vote->user->student)
-                                    {{ $vote->user->student->student->getStudentName($vote->user->student->student_id) }}
+                                    {{ $vote->user->student->student->fullname('') }}
                                     @elseif($vote->user->faculty)
-                                    {{ $vote->user->faculty->student->getFacultyName($vote->user->faculty->faculty_id) }}
+                                    {{ $vote->user->faculty->student->fullname('') }}
                                     @endif
                                 </td>
                                 @role('System Administrator')

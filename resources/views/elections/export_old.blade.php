@@ -24,9 +24,9 @@
         <tr>
             <th>
                 @if($vote->user->student)
-                {{ $vote->user->student->student->getStudentName($vote->user->student->student_id) }}
+                {{ $vote->user->student->student->fullname('') }}
                 @elseif($vote->user->faculty)
-                {{ $vote->user->faculty->student->getFacultyName($vote->user->faculty->faculty_id) }}
+                {{ $vote->user->faculty->student->fullname('') }}
                 @endif
             </th>
             @foreach ($election->candidates->groupBy('position_id') as $position => $candidates)

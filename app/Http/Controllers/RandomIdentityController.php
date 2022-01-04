@@ -52,7 +52,8 @@ class RandomIdentityController extends Controller
 				$user = User::create([
 					'username' => $student->student_id,
 					'email' => $student->student_id.'@gmail.com',
-					'password' => Hash::make('asdasd')
+					'password' => Hash::make('asdasd'),
+					'temp_password' => 'asdasd'
 				]);
 	
 				$user->assignRole(4);

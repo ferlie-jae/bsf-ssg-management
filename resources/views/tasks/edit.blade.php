@@ -19,7 +19,7 @@
                                     <option></option>
                                     @foreach ($officers as $officer)
                                         <option value="{{ $officer->student_id }}" @if($task->student_id == $officer->student_id) selected @endif >
-                                            [{{ $officer->position->name }}] {{ $officer->student->getStudentName() }}
+                                            [{{ $officer->position->name }}] {{ $officer->student->fullname('') }}
                                         </option>
                                     @endforeach
                                 </select>

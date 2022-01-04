@@ -45,7 +45,7 @@
                                 @foreach ($candidates as $candidate)
                                 <tr class="{{ $candidate->trashed() ? 'table-danger' : ''}}">
                                     <td>
-                                        {{-- {{ $candidate->student->id}} -  --}}{{ $candidate->student->getStudentName($candidate->student_id) }}
+                                        {{-- {{ $candidate->student->id}} -  --}}{{ $candidate->student->fullname('') }}
                                     </td>
                                     <td>
                                         {{ $candidate->votes->count() ?? "N/A" }}

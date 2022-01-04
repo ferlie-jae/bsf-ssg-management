@@ -13,7 +13,7 @@
                     @if($position->candidate_to_elect > 1)
                         <p>
                             @forelse ($position->electedOfficer() as $candidate)
-                                {{ $candidate->student->getStudentName() }}
+                                {{ $candidate->student->fullname('') }}
                                 <br>
                             @empty
                             <p>N/A</p>
@@ -21,7 +21,7 @@
                         </p>
                     @else
                         <p>
-                            {{ $position->electedOfficer()->student->getStudentName() }}
+                            {{ $position->electedOfficer()->student->fullname('') }}
                         </p>
                     @endif
                 @endif

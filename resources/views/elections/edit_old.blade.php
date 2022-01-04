@@ -55,7 +55,7 @@
                                 <label>{{ $position->name }}:</label>
                                 <select class="form-control candidates-select2" multiple name="candidates[{{ $position->id}}][]" data-position-id="{{ $position->id}}" style="width: 100%">
                                     @foreach ($students as $student)
-                                        <option value="{{ $student->id }}" @if($election->findCandidate($student->id, $position->id)) selected @endif>{{ $student->getStudentNameLNF() }}</option>
+                                        <option value="{{ $student->id }}" @if($election->findCandidate($student->id, $position->id)) selected @endif>{{ $student->fullname('') }}</option>
                                     @endforeach
                                 </select>
                             </div>
