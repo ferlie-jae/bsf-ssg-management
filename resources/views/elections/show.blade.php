@@ -36,7 +36,7 @@
             <div class="col-md-12">
                 <div class="form-group">
                     <label class="mb-0">Status: </label>
-                    {{ $election->status }}
+                    {!! $election->getStatusBadge() !!}
                 </div>
                 <div class="form-group">
                     <label class="mb-0">Title: </label>

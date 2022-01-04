@@ -36,7 +36,7 @@
                         <tr @unlessrole('System Administrator') @can('elections.show') data-toggle="tr-link" data-target="#showElection" data-href="{{ route('elections.show', $election->id) }}"  @endcan @else class="{{ $election->trashed() ? 'table-danger' : '' }}" @endunlessrole>
                             <td>{{ $index+1 }}</td>
                             <td>
-                                {{ $election->status }}
+                                {!! $election->getStatusBadge() !!}
                             </td>
                             <td>{{ $election->title }}</td>
                             <td>{{ $election->description }}</td>

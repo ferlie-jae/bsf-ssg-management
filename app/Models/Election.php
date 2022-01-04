@@ -58,6 +58,7 @@ class Election extends Model
 
     public function getStatus()
     {
+        $now = Carbon::now();
         $start_date = Carbon::parse($this->start_date);
         $end_date = Carbon::parse($this->end_date);
         $status = 'incoming';
