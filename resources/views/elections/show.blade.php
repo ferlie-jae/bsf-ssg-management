@@ -19,9 +19,11 @@
                 @can('elections.edit')
                     <a class="btn btn-default text-primary" href="{{ route('elections.edit', $election->id) }}"><i class="fad fa-edit"></i> Edit</a>
                 @endcan
-                @can('elections.end')
-                    <a class="btn btn-default text-success" href="{{ route('elections.end', $election->id) }}" ><i class="fad fa-stamp"></i> End</a>
-                @endcan
+                @if($election->getStatus() == 'ongoing')
+                    @can('elections.end')
+                        <a class="btn btn-default text-success" href="{{ route('elections.end', $election->id) }}" ><i class="fad fa-stamp"></i> End</a>
+                    @endcan
+                @endif
                 <a class="btn btn-primary" href="{{ route('elections.export', ['election_id' => $election->id]) }}" target="_blank"><i class="fad fa-table"></i> Export Excel</a>
                 <a class="btn btn-default" href="{{ route('elections.index') }}" ><i class="fa fa-arrow-left"></i> Back</a>
             </div>
