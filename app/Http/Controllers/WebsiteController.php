@@ -8,6 +8,7 @@ use App\Models\Announcement;
 use App\Models\Election;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactUsMail;
+use Carbon\Carbon;
 
 class WebsiteController extends Controller
 {
@@ -50,7 +51,7 @@ class WebsiteController extends Controller
 
     public function ssgOfficials()
     {
-        $elections = Election::orderBy('created_at', 'DESC')->get();
+        $elections = Election::whereDate('end_date', '<', Carbon::now())->orderBy('created_at', 'DESC')->get();
         $data = [
             'elections' => $elections
         ];

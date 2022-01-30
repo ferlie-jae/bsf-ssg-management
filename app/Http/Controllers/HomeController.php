@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\Configuration\Position;
 use App\Charts\OngoingElectionChart;
 use App\Charts\ElectionResultPieChart;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -32,6 +33,7 @@ class HomeController extends Controller
      */
     public function index()
     {
+        $now = Carbon::now();
         $students = Student::get()->count();
         $faculties = Faculty::get()->count();
         $taskDone = Task::where('is_done', 1)->get()->count();
@@ -40,7 +42,10 @@ class HomeController extends Controller
 
         $electionChart = [];
         $electionPieChart = [];
-        $ongoingElection = Election::where('status', 'ongoing')->orderBy('start_date','DESC')->first();
+        $ongoingElection = Election::where([
+                            ['start_date', '<', $now],
+                            ['end_date', '>', $now]
+                            ])->orderBy('end_date','DESC')->first();
         if(isset($ongoingElection->id)){
             foreach ($ongoingElection->candidates->groupBy('position_id') as $position => $candidates) {
                 $electionChart[$position] = new OngoingElectionChart;

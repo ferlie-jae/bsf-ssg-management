@@ -118,7 +118,7 @@
                         <div class="dropdown-menu" aria-labelledby="servicesDropdownMenu">
                             <a class="dropdown-item" href="{{ route('website.courses') }}">Courses Offered</a>
                             <a class="dropdown-item" href="{{ route('website.enrollment_procedure') }}">Enrollment Procedure</a>
-                            <a class="dropdown-item" href="{{ route('login') }}" target="_blank">Login</a>
+                            <a class="dropdown-item" href="{{ route('login') }}">Login</a>
                         </div>
                     </li>
                 </ul>

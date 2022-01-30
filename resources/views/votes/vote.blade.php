@@ -86,8 +86,19 @@
                     $(this).prop('checked', false);
                 }
             })
-            
+            $('.candidate-checkbox').each(function(){
+                var name = $(this).attr('name');
+                var elect = $(this).data('elect');
+                var countSelected = $('.candidate-checkbox[name="' + name + '"]:checked').length;
+                console.log(countSelected)
+                if(countSelected == elect){
+                    $('.candidate-checkbox[name="' + name + '"]:not(:checked)').prop('disabled', true);
+                }else{
+                    $('.candidate-checkbox[name="' + name + '"]').prop('disabled', false);
+                }
+            })
         })
+
         $('.candidate-checkbox').change(function(){
             var name = $(this).attr('name');
             var elect = $(this).data('elect');

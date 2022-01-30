@@ -16,6 +16,7 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
+                @hasrole('student')
                 <div class="col">
                     <table id="datatable" class="table table-sm table-bordered table-hover">
                         <thead>
@@ -57,6 +58,75 @@
                         </tbody>
                     </table>
                 </div>
+                @else
+                <div class="col" id="accordion">
+                    @foreach ($votes as $electionID => $votesByElection)
+                        @php
+                            $election = App\Models\Election::find($electionID);
+                        @endphp
+                        <div class="card card-primary card-outline">
+                            <a class="d-block" data-toggle="collapse" href="#evaluation-{{ $electionID }}">
+                                <div class="card-header d-flex p-0">
+                                    <h4 class="card-title p-3 text-dark">
+                                        {{ $election->title }}
+                                        {!! $election->getStatusbadge() !!}
+                                        |
+                                        <i>
+                                            <b>Date:</b>
+                                            {{ date('F d, Y h:i A', strtotime($election->start_date)) }}
+                                            -
+                                            {{ date('F d, Y h:i A', strtotime($election->end_date)) }}
+                                        </i>
+                                    </h4>
+                                </div>
+                            </a>
+                            <div id="evaluation-{{ $electionID }}" class="collapse @if($election->getStatus() == 'ongoing') show @endif" data-parent="#accordion">
+                                <div class="card-body">
+                                    <table class="table table-sm table-bordered table-hover datatable">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Election</th>
+                                                <th>Vote Number</th>
+                                                <th>Name</th>
+                                                @role('System Administrator')
+                                                <th class="text-center">Action</th>
+                                                @endrole
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($votesByElection as $index => $vote)
+                                            <tr @unlessrole('System Administrator') @can('votes.show') data-toggle="modal-ajax" data-target="#showVote" data-href="{{ route('votes.show', $vote->id) }}"  @endcan @else class="{{ $vote->trashed() ? 'table-danger' : '' }}" @endunlessrole>
+                                                <td>{{ $index+1 }}</td>
+                                                <td>{{ $vote->election->title }}</td>
+                                                <td>{{ $vote->vote_number }}</td>
+                                                <td>
+                                                    @if($vote->user->student)
+                                                    {{ $vote->user->student->student->fullname('') }}
+                                                    @elseif($vote->user->faculty)
+                                                    {{ $vote->user->faculty->student->fullname('') }}
+                                                    @endif
+                                                </td>
+                                                @role('System Administrator')
+                                                    <td class="text-center">
+                                                        <a href="javascript:void(0)" data-toggle="modal-ajax" data-target="#showVote" data-href="{{ route('votes.show',$vote->id) }}"><i class="fad fa-file fa-lg"></i></a>
+                                                        @if ($vote->trashed())
+                                                            <a class="text-success" href="javascript:void(0)" onclick="restoreFromTable(this)" data-href="{{ route('votes.restore', $vote->id) }}"><i class="fad fa-download fa-lg"></i></a>
+                                                        @else
+                                                            <a class="text-danger" href="javascript:void(0)" onclick="deleteFromTable(this)" data-href="{{ route('votes.destroy', $vote->id) }}"><i class="fad fa-trash-alt fa-lg"></i></a>
+                                                        @endif
+                                                    </td>
+                                                @endrole
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                @endhasrole
                 @role('System Administrator')
                     @if(config('app.env') == 'local')
                     <div class="col-md-3">

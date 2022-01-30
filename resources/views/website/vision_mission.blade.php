@@ -1,7 +1,6 @@
 @extends('layouts.website')
 @section('content')
 <div class="container text-center mt-3 mb-5 pb-5">
-   
     <div class="row justify-content-center">
         <div class="col-md-8">
             <img class="img-fluid" width="250px" src="{{ asset('images/logo.png') }}" alt="">

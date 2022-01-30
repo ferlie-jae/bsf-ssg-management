@@ -10,6 +10,7 @@ use App\Models\Candidate;
 use App\Models\VoteData;
 use App\Models\UserStudent;
 use App\Models\Student;
+use Carbon\Carbon;
 use Auth;
 
 class VoteController extends Controller
@@ -21,7 +22,7 @@ class VoteController extends Controller
      */
     public function index()
     {
-        $vote = Vote::select('*');
+        $vote = Vote::select('*')->orderBy('election_id', 'DESC');
 
         if(Auth::user()->hasrole('System Administrator'))
         {
@@ -29,11 +30,13 @@ class VoteController extends Controller
         }
         
         if(Auth::user()->hasrole('Student')){
-            $vote = $vote->where('voter_id', Auth::user()->id);
+            $vote = $vote->where('voter_id', Auth::user()->id)->get();
+        }else{
+            $vote = $vote->get()->groupBy('election_id');
         }
 
         $data = [
-            'votes' => $vote->get(),
+            'votes' => $vote,
             'elections' => Election::get(),
         ];
 
@@ -48,12 +51,16 @@ class VoteController extends Controller
     public function create()
     {
         if(request()->ajax()){
+            $now = Carbon::now();
             $studentVotes = Vote::where([
                 'voter_id' => Auth::user()->id
             ])->select('election_id');
 
             $data = ([
-                'elections' => Election::whereNotIn('id', $studentVotes)->where('status', 'ongoing')->get()
+                'elections' => Election::whereNotIn('id', $studentVotes)->where([
+                    ['start_date', '<', $now],
+                    ['end_date', '>', $now]
+                    ])->get()
             ]);
 
             return response()->json([

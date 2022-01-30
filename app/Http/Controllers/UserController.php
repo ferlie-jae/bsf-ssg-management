@@ -44,7 +44,8 @@ class UserController extends Controller
 		
 		$data = [
 			'users' => $users->get()
-		];
+        ];
+
 		return view('users.index', $data);
     }
 

@@ -10,8 +10,11 @@ use App\Models\Configuration\Section;
 use App\Models\Student;
 use App\Models\Candidate;
 use App\Models\Partylist;
+use App\Models\User;
+use App\Models\UserStudent;
 use App\Charts\OngoingElectionChart;
 use App\Charts\ElectionResultPieChart;
+use App\Charts\VoteChart;
 use Carbon\Carbon;
 use Auth;
 use App\Exports\ElectionExport;
@@ -36,12 +39,45 @@ class ElectionController extends Controller
      */
     public function index()
     {
+        $voteChart = new VoteChart();
         $elections = Election::select('*');
         if(Auth::user()->hasrole('System Administrator')){
             $elections = $elections->withTrashed();
         }
+        $activeElection = Election::whereDate('end_date', '>', Carbon::now())->orderBy('end_date','DESC')->first();
+
+        $totalVoters = UserStudent::join('users', 'users.id', '=', 'user_students.id')->select('users.*')->count();
+        $voted = Vote::where('election_id', $activeElection->id)->count();
+        $notYetVoted = $totalVoters - $voted;
+
+        // Pie Chart
+
+        $percentageOfVoted = round(($voted / $totalVoters) * 100, PHP_ROUND_HALF_UP );
+        $percentageOfNotYetVoted = round(($notYetVoted / $totalVoters) * 100, PHP_ROUND_HALF_UP );
+        $voteChart->labels(['Voted ('.$percentageOfVoted.'%)', 'Not yet voted ('.$percentageOfNotYetVoted.'%)']);
+        // $electionPieChart[$election->id][$position]->labels($pieChartLabels);
+        $voteChart->dataset('Votes', 'pie', [$voted, $notYetVoted])->backgroundColor(['#28a745','#6c757d'])->color('#fff');
+        $voteChart->options([
+            'scales' => [
+                'yAxes' => [[
+                    'display' => false,
+                    /* 'gridLines' => [
+                        'display' => false
+                    ] */
+                ]],
+                'xAxes' => [[
+                    'display' => false,
+                    /* 'gridLines' => [
+                        'display' => false
+                    ] */
+                ]]
+            ]
+        ]);
+
         $data = [
-            'elections' => $elections->orderBy('created_at', 'DESC')->get()
+            // 'election' => $elections->whereIn('status', ['incoming','ongoing'])->first()
+            'election' => $activeElection,
+            'voteChart' => $voteChart
         ];
 
         return view('elections.index', $data);
@@ -269,7 +305,8 @@ class ElectionController extends Controller
     {
         $electionChart = [[]];
         $electionPieChart = [[]];
-        $elections = Election::where('status', 'ended')->orderBy('end_date','DESC')->get();
+        $now = Carbon::now();
+        $elections = Election::whereDate('end_date', '<', $now)->orderBy('end_date','DESC')->get();
         foreach($elections as $election){
             if(isset($election->id)){
                 foreach ($election->candidates->groupBy('position_id') as $position => $candidates) {
@@ -329,6 +366,7 @@ class ElectionController extends Controller
                     
                     // $electionChart[$election->id][$position]->dataset('votes', 'bar', $votes)->backgroundColor('#007bff')->color('#007bff');
                     $electionPieChart[$election->id][$position]->options([
+                        
                         'scales' => [
                             'yAxes' => [[
                                 'display' => false,
@@ -360,7 +398,8 @@ class ElectionController extends Controller
     public function endElection(Election $election)
     {
         $election->update([
-            'status' => 'ended'
+            'status' => 'ended',
+            'end_date' => Carbon::now(),
         ]);
 
         return redirect()->route('elections.index')->with('alert-success', 'Election Ended');

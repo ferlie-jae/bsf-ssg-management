@@ -50,6 +50,7 @@ class RandomIdentityController extends Controller
 			if($request->get('add_account') == 'add_account'){
 				// $email = $this->email($student->first_name, $last_name, $student->student_id);
 				$user = User::create([
+					'is_verified' => 1,
 					'username' => $student->student_id,
 					'email' => $student->student_id.'@gmail.com',
 					'password' => Hash::make('asdasd'),

@@ -21,4 +21,9 @@ class UserRole extends Model
 	{
 		return $this->belongsTo('App\Models\Configuration\RolePermission\Role', 'role_id');
 	}
+
+	public function users()
+	{
+		return $this->hasMany('App\Models\Users', 'user_id');
+	}
 }

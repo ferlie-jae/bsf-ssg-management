@@ -10,21 +10,9 @@
                     Results
                 </h1>
             </div>
-            <!-- /.col -->
-            {{-- <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">Dashboard v2</li>
-                </ol>
-            </div> --}}
-            <!-- /.col -->
         </div>
-        <!-- /.row -->
     </div>
-    <!-- /.container-fluid -->
 </div>
-<!-- /.content-header -->
-<!-- Main content -->
 <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -60,13 +48,35 @@
                                                     </div>
                                                     <div class="card-body">
                                                         <div class="row">
-                                                            <div class="col-md-6">
-                                                                <div class="position-relative mb-4">
+                                                            <div class="col-md-4">
+                                                                <table class="table table-sm table-bordered">
+                                                                    <tr>
+                                                                        <th>Candidate</th>
+                                                                        <th>partylist</th>
+                                                                        <th>Vote</th>
+                                                                    </tr>
+                                                                    @foreach ($candidates as $candidate)
+                                                                    <tr class="{{ $candidate->trashed() ? 'table-danger' : ''}}">
+                                                                        <td>
+                                                                            {{ $candidate->student->student_id}} - {{ $candidate->student->fullname('') }}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{ $candidate->partylist->name ?? "" }}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{ $candidate->votes->count() ?? "N/A" }}
+                                                                        </td>
+                                                                    </tr>
+                                                                    @endforeach
+                                                                </table>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="position-relative">
                                                                     {!! $electionChart[$election->id][$position]->container() !!}
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-6">
-                                                                <div class="position-relative mb-4">
+                                                            <div class="col-md-4">
+                                                                <div class="position-relative">
                                                                     {!! $electionPieChart[$election->id][$position]->container() !!}
                                                                 </div>
                                                             </div>
@@ -85,21 +95,9 @@
                 <h3 class="text-center text-danger">No Election Yet</h3>
                 @endforelse
             </div>
-            {{-- <div class="col-lg-12">
-                    {!! $patientChart->container() !!}
-                </div> --}}
         </div>
-        {{-- <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-header"></div>
-                </div>
-            </div>
-        </div> --}}
     </div>
-    <!--/. container-fluid -->
 </section>
-<!-- /.content -->
 @endsection
 
 @section('script')

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Election;
 use App\Models\Student;
 use App\Models\Candidate;
+use Carbon\Carbon;
 
 class Position extends Model
 {
@@ -21,7 +22,7 @@ class Position extends Model
 
     public function electedOfficer()
     {
-        $latestElection = Election::where('status', 'ended')->orderBy('end_date','DESC')->first();
+        $latestElection = Election::whereDate('end_date', '<', Carbon::now())->orderBy('end_date','DESC')->first();
         if(isset($latestElection->id)){
             if($this->candidate_to_elect > 1)
             {
