@@ -121,6 +121,8 @@
 </section>
 @endsection
 @section('script')
-    <script src="{{ asset('AdminLTE-3.1.0/plugins/chart.js/Chart.min.js') }}"></script>
-    {!! $voteChart->script() !!}
+    @isset($election->id)
+        <script src="{{ asset('AdminLTE-3.1.0/plugins/chart.js/Chart.min.js') }}"></script>
+        {!! $voteChart->script() !!}
+    @endisset
 @endsection

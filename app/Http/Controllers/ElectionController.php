@@ -46,33 +46,35 @@ class ElectionController extends Controller
         }
         $activeElection = Election::whereDate('end_date', '>', Carbon::now())->orderBy('end_date','DESC')->first();
 
-        $totalVoters = UserStudent::join('users', 'users.id', '=', 'user_students.id')->select('users.*')->count();
-        $voted = Vote::where('election_id', $activeElection->id)->count();
-        $notYetVoted = $totalVoters - $voted;
+        if(isset($activeElection->id)){
+            $totalVoters = UserStudent::join('users', 'users.id', '=', 'user_students.id')->select('users.*')->count();
+            $voted = Vote::where('election_id', $activeElection->id)->count();
+            $notYetVoted = $totalVoters - $voted;
 
-        // Pie Chart
+            // Pie Chart
 
-        $percentageOfVoted = round(($voted / $totalVoters) * 100, PHP_ROUND_HALF_UP );
-        $percentageOfNotYetVoted = round(($notYetVoted / $totalVoters) * 100, PHP_ROUND_HALF_UP );
-        $voteChart->labels(['Voted ('.$percentageOfVoted.'%)', 'Not yet voted ('.$percentageOfNotYetVoted.'%)']);
-        // $electionPieChart[$election->id][$position]->labels($pieChartLabels);
-        $voteChart->dataset('Votes', 'pie', [$voted, $notYetVoted])->backgroundColor(['#28a745','#6c757d'])->color('#fff');
-        $voteChart->options([
-            'scales' => [
-                'yAxes' => [[
-                    'display' => false,
-                    /* 'gridLines' => [
-                        'display' => false
-                    ] */
-                ]],
-                'xAxes' => [[
-                    'display' => false,
-                    /* 'gridLines' => [
-                        'display' => false
-                    ] */
-                ]]
-            ]
-        ]);
+            $percentageOfVoted = round(($voted / $totalVoters) * 100, PHP_ROUND_HALF_UP );
+            $percentageOfNotYetVoted = round(($notYetVoted / $totalVoters) * 100, PHP_ROUND_HALF_UP );
+            $voteChart->labels(['Voted ('.$percentageOfVoted.'%)', 'Not yet voted ('.$percentageOfNotYetVoted.'%)']);
+            // $electionPieChart[$election->id][$position]->labels($pieChartLabels);
+            $voteChart->dataset('Votes', 'pie', [$voted, $notYetVoted])->backgroundColor(['#28a745','#6c757d'])->color('#fff');
+            $voteChart->options([
+                'scales' => [
+                    'yAxes' => [[
+                        'display' => false,
+                        /* 'gridLines' => [
+                            'display' => false
+                        ] */
+                    ]],
+                    'xAxes' => [[
+                        'display' => false,
+                        /* 'gridLines' => [
+                            'display' => false
+                        ] */
+                    ]]
+                ]
+            ]);
+        }
 
         $data = [
             // 'election' => $elections->whereIn('status', ['incoming','ongoing'])->first()
