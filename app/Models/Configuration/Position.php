@@ -22,7 +22,7 @@ class Position extends Model
 
     public function electedOfficer()
     {
-        $latestElection = Election::whereDate('end_date', '<', Carbon::now())->orderBy('end_date','DESC')->first();
+        $latestElection = Election::where('end_date', '<', Carbon::now())->orderBy('end_date','DESC')->first();
         if(isset($latestElection->id)){
             if($this->candidate_to_elect > 1)
             {

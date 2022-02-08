@@ -22,21 +22,21 @@ class VoteController extends Controller
      */
     public function index()
     {
-        $vote = Vote::select('*')->orderBy('election_id', 'DESC');
+        $votes = Vote::select('*')->orderBy('election_id', 'DESC');
 
         if(Auth::user()->hasrole('System Administrator'))
         {
-            $vote = $vote->withTrashed();
+            $votes = $votes->withTrashed();
         }
         
         if(Auth::user()->hasrole('Student')){
-            $vote = $vote->where('voter_id', Auth::user()->id)->get();
+            $votes = $votes->where('voter_id', Auth::user()->id)->get();
         }else{
-            $vote = $vote->get()->groupBy('election_id');
+            $votes = $votes->get()->groupBy('election_id');
         }
 
         $data = [
-            'votes' => $vote,
+            'votes' => $votes,
             'elections' => Election::get(),
         ];
 

@@ -308,7 +308,7 @@ class ElectionController extends Controller
         $electionChart = [[]];
         $electionPieChart = [[]];
         $now = Carbon::now();
-        $elections = Election::whereDate('end_date', '<', $now)->orderBy('end_date','DESC')->get();
+        $elections = Election::where('end_date', '<', $now)->orderBy('end_date','DESC')->get();
         foreach($elections as $election){
             if(isset($election->id)){
                 foreach ($election->candidates->groupBy('position_id') as $position => $candidates) {

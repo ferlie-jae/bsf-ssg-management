@@ -16,7 +16,7 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                @hasrole('student')
+                @hasrole('Student')
                 <div class="col">
                     <table id="datatable" class="table table-sm table-bordered table-hover">
                         <thead>
