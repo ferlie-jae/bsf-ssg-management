@@ -83,6 +83,13 @@
             </div>
             <div class="col-md-3">
                 <legend>Account Info</legend>
+                @if($user->is_verified == 0)
+                    @isset($user->student->id)
+                    <label>School ID:</label>
+                    <button class="btn btn-xs btn-info" type="button" data-toggle="modal" data-target="#viewSchoolIDImage">View</button>
+                    @endif
+                    <br>
+                @endif
                 <label class="mb-0">Status:</label>
                 @if($user->is_verified == 1)
                 <span class="badge badge-success">Verified</span>
@@ -138,6 +145,21 @@
                 <br>
                 <label class="mb-0">Address #:</label>
                 {{ $user_info==false ? "" : $user_info->address }}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="viewSchoolIDImage" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">School ID</h5>
+                <a href="javascript:void(0)" class="close" data-dismiss="modal" data-target="#viewSchoolIDImage">
+                    <span aria-hidden="true">&times;</span>
+                </a>
+            </div>
+            <div class="modal-body text-center">
+                <img src="{{ asset($user->schoolIDImage()) }}" alt="" class="img-thumbnail">
             </div>
         </div>
     </div>

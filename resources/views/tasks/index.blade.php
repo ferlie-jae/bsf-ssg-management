@@ -58,11 +58,11 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Status</th>
-                                <th>Position</th>
-                                <th>Officer</th>
                                 <th>Task</th>
                                 <th>Description</th>
+                                <th>Status</th>
+                                <th>Officer</th>
+                                <th>Position</th>
                                 @role('System Administrator')
                                 <th class="text-center">Action</th>
                                 @endrole
@@ -72,13 +72,13 @@
                             @foreach ($tasks as $index => $task)
                             <tr @unlessrole('System Administrator') @can('tasks.show') data-toggle="modal-ajax" data-target="#showTask" data-href="{{ route('tasks.show', $task->id) }}"  @endcan @else class="{{ $task->trashed() ? 'table-danger' : '' }}" @endunlessrole>
                                 <td>{{ $index+1 }}</td>
-                                <td>
-                                    {{ $task->is_done ? "Done" : "Not yet done" }}
-                                </td>
-                                <td>{{ $task->student->getPosition() }}</td>
-                                <td>{{ $task->student->fullname('') }}</td>
                                 <td>{{ $task->task }}</td>
                                 <td>{{ $task->description }}</td>
+                                <td>
+                                    {{ $task->is_done ? "Accomplished" : "Not yet Accomplished" }}
+                                </td>
+                                <td>{{ $task->student->fullname('') }}</td>
+                                <td>{{ $task->student->getPosition() }}</td>
                                 @role('System Administrator')
                                     <td class="text-center">
                                         <a href="javascript:void(0)" data-toggle="modal-ajax" data-target="#showTask" data-href="{{ route('tasks.show',$task->id) }}"><i class="fad fa-file fa-lg"></i></a>

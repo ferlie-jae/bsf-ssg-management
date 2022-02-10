@@ -52,16 +52,16 @@ class StudentController extends Controller
      */
     public function create()
     {
-        $roles = Role::select('*');
+       /*  $roles = Role::select('*');
 		if(Auth::user()->hasrole('System Administrator')){
 			$roles = $roles;
 		}elseif(Auth::user()->hasrole('Administrator')){
 			$roles->where('id', '!=', 1)->get();
 		}else{
 			$roles->whereNotIn('id', [1,2]);
-        }
+        } */
         $data = ([
-			'roles' => $roles->get(),
+			// 'roles' => $roles->get(),
 			'sections' => Section::get()
 		]);
 

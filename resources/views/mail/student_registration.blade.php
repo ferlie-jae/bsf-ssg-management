@@ -15,9 +15,15 @@
         These are the information you've been registered:
         <ul style="list-style: none">
             <li>
+                <b>Student ID:</b>
+                {{ $student->student_id }}
+            </li><li>
                 <b>First Name:</b>
                 {{ $student->first_name }}
-
+            </li>
+            <li>
+                <b>First Name:</b>
+                {{ $student->first_name }}
             </li>
             <li>
                 <b>Last Name:</b>

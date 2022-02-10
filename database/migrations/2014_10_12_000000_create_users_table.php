@@ -15,6 +15,7 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('school_id_image')->nullable();
             $table->string('avatar')->nullable();
             $table->unsignedBigInteger('student_id')->nullable();
             $table->boolean('is_verified')->nullable()->default(0);

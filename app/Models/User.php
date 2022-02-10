@@ -22,6 +22,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
+        'school_id_image',
         'avatar',
         'is_verified',
         'username',
@@ -99,6 +100,14 @@ class User extends Authenticatable
     {
         $seen_announcements = $this->seen_announcements()->get('id');
         return Announcement::whereNotIn('id', $seen_announcements)->get();
+    }
+
+    public function schoolIDImage()
+    {
+        if(!is_null($this->school_id_image)){
+            return 'images/user/uploads/'.$this->school_id_image;
+        }
+        return 'images/no-image.png';
     }
 
     public function avatar()

@@ -40,6 +40,19 @@ Route::get('enrollment-procedure', 'WebsiteController@enrollmentProcedure')->nam
 
 
 Route::get('dashboard', 'HomeController@index')->name('dashboard');
+
+Route::post('student_registration', [
+	'as' => 'student_registration.store',
+	'uses' => 'StudentRegistrationController@store'
+]);
+
+Route::get('student_registration', [
+	'as' => 'student_registration.create',
+	'uses' => 'StudentRegistrationController@create'
+]);
+
+Route::get('registration_complete', 'StudentRegistrationController@registrationComplete')->name('registration_complete');
+
 Route::group(array('middleware'=>['auth']), function() {
 
 	if(config('app.permissions') == true){

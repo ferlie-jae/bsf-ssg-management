@@ -16,7 +16,7 @@
                         </div>
                         <div class="form-group mb-0">
                             <label>Status:</label>
-                            {{ $task->is_done == 1 ? "Done" : "Not yet done" }}
+                            {{ $task->is_done == 1 ? "Accomplished" : "Not yet Accomplished" }}
                         </div>
                         <div class="form-group mb-0">
                             <label>Task:</label>
