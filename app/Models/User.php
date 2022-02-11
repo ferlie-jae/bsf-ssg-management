@@ -78,7 +78,7 @@ class User extends Authenticatable
     }
 
     public function faculty(){
-        return $this->hasOne('App\Models\userFaculty', 'user_id');
+        return $this->hasOne('App\Models\UserFaculty', 'user_id');
     }
 
     public function isOfficer()
