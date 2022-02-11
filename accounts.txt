@@ -15,6 +15,7 @@ Email		: ferliejaebautista001@gmail.com
 Password	: binmaleymanagement0!
 
 /* Hostinger Account */
+ssh -p 65002 u393730945@194.163.35.51
 Server IP       : 194.163.35.87
 FTP Password    : BinmaleyManagement0!
 SSH Password    : BinmaleyManagement0!

@@ -225,7 +225,7 @@ class UserController extends Controller
 		}else{
 			$user->delete();
 		}
-		return back()->with('alert-danger','Deleted');
+		return redirect()->route('users.index')->with('alert-danger','Deleted');
 		// return redirect()->route('users.index')->with('alert-danger','User successfully deleted');
 	}
 
@@ -233,7 +233,7 @@ class UserController extends Controller
 	{
 		$user = User::withTrashed()->find($user);
 		$user->restore();
-		return back()->with('alert-success','Restored');
+		return redirect()->route('users.index')->with('alert-success','Restored');
 		// return redirect()->route('users.index')->with('alert-success','User successfully restored');
     }
     
@@ -316,13 +316,13 @@ class UserController extends Controller
     public function deactivate(User $user)
     {
         $password = base64_encode(time());
-        Mail::to($user->email)->send(new AccountDeactivatedMail($user));
         $user->update([
             'is_verified' => 0,
             // 'is_first_login' => 1,
             'password' => Hash::make($password),
             'temp_password' => null,
         ]);
+        Mail::to($user->email)->send(new AccountDeactivatedMail($user));
         return redirect()->route('users.show', $user->id)->with('alert-success', 'saved');
     }
 }

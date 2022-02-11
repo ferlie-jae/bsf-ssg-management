@@ -144,6 +144,30 @@
 			{{-- </div>
 		</div> --}}
 		<script src="{{ asset('AdminLTE-3.1.0/plugins/select2/js/select2.full.min.js') }}"></script>
+		{{-- Initilize select2 --}}
+		<script type="application/javascript">
+			$(function() {
+				$.fn.select2.defaults.set('theme', 'bootstrap4');
+				$('.select2').select2({
+					theme: "bootstrap4",
+					placeholder: "Select",
+				});
+				
+				$('.select2-allow-clear').select2({
+					theme: "bootstrap4",
+					placeholder: "Select",
+					allowClear: true
+				});
+
+				$('.select2-tag').select2({
+					theme: "bootstrap4",
+					placeholder: "Select",
+					allowClear: true,
+					tags: true,
+				});
+				
+			});
+		</script>
 		<script>
 			function calculateAge(input){
 				var dob = $(input).val();
