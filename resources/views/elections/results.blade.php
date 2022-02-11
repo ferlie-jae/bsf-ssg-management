@@ -35,6 +35,24 @@
                         </a>
                         <div id="election-{{ $election->id }}" class="collapse @if($loop->first) show @endif" data-parent="#accordion">
                             <div class="card-body">
+                                <div class="row">
+                                    <div class="col text-right">
+                                        <a class="btn btn-primary" href="{{ route('elections.export', ['election_id' => $election->id]) }}" target="_blank"><i class="fad fa-table"></i> Export Excel</a>
+                                        @if ($election->trashed())
+                                            @can('elections.restore')
+                                            <a class="btn btn-default text-success" href="javascript:void(0)" onclick="restoreFromTable(this)" data-href="{{ route('elections.restore', $election->id) }}"><i class="fad fa-download"></i> Restore</a>
+                                            @endcan
+                                        @else
+                                            @can('elections.destroy')
+                                            <a class="btn btn-default text-danger" href="javascript:void(0)" onclick="deleteFromTable(this)" data-href="{{ route('elections.destroy', $election->id) }}"><i class="fad fa-trash-alt"></i> Delete</a>
+                                            @endcan
+                                        @endif
+                                        @can('elections.edit')
+                                            <a class="btn btn-default text-primary" href="{{ route('elections.edit', $election->id) }}"><i class="fad fa-edit"></i> Edit</a>
+                                        @endcan
+                                    </div>
+                                </div>
+                                <hr>
                                 <div class="position-relative mb-4">
                                     <div class="row">
                                         @foreach ($election->candidates->groupBy('position_id') as $position => $candidates)
@@ -105,6 +123,10 @@
     @foreach ($elections as $election)
         @isset($election->id)
             @foreach ($election->candidates->groupBy('position_id') as $position => $candidates)
+            <script>
+                var chart = new Chart('{{ $electionChart[$election->id][$position]->id }}')
+                var pieChart = new Chart('{{ $electionPieChart[$election->id][$position]->id }}')
+            </script>
                 {!! $electionChart[$election->id][$position]->script() !!}
                 {!! $electionPieChart[$election->id][$position]->script() !!}
             @endforeach
