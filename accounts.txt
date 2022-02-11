@@ -13,3 +13,12 @@ Name		: Ferlie Jae Bautista
 Username	: ferlie-jae
 Email		: ferliejaebautista001@gmail.com
 Password	: binmaleymanagement0!
+
+/* Hostinger Account */
+Server IP       : 194.163.35.87
+FTP Password    : BinmaleyManagement0!
+SSH Password    : BinmaleyManagement0!
+--------------------------------
+DB Name         : u393730945_bsf_ssg
+DB Username     : u393730945_bsf
+DB Password     : 3o[ZRGN?pS
