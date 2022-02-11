@@ -104,6 +104,6 @@ class StudentRegistrationController extends Controller
 
         Mail::to($user->email)->send(new StudentRegistrationMail($user));
 
-		return redirect()->route('registration_complete')->with('alert-success', 'Saved');
+		// return redirect()->route('registration_complete')->with('alert-success', 'Saved');
     }
 }

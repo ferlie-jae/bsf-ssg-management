@@ -45,7 +45,7 @@ return [
 
         'upload' => [
             'driver' => 'local',
-            'root' => public_path(),
+            'root' => base_path().'/public_html',
         ],
 
         'local' => [

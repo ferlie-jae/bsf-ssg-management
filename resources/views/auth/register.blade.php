@@ -51,7 +51,12 @@
 							<div class="form-group row">
 								<label for="inputStudentID" class="col-sm-4 col-form-label">Student ID <strong class="text-danger">*</strong></label>
 								<div class="col-sm-8">
-									<input type="text" name="student_id" class="form-control" id="inputStudentID" placeholder="Student ID" value="{{ old('student_id') }}" required>
+									<input type="text" name="student_id" class="form-control @error('student_id') is-invalid @enderror" id="inputStudentID" placeholder="Student ID" value="{{ old('student_id') }}" required>
+									@error('student_id')
+										<span class="invalid-feedback" role="alert">
+											<strong>{{ $message }}</strong>
+										</span>
+									@enderror
 								</div>
 							</div>
 							<div class="form-group row">
@@ -119,7 +124,12 @@
 							<div class="form-group row">
 								<label for="inputEmail" class="col-sm-4 col-form-label">Email <strong class="text-danger">*</strong></label>
 								<div class="col-sm-8">
-									<input type="email" name="email" class="form-control" id="inputEmail" placeholder="Email" value="{{ old('email') }}">
+									<input type="email" name="email" class="form-control @error('email') is-invalid @enderror" id="inputEmail" placeholder="Email" value="{{ old('email') }}">
+									@error('email')
+										<span class="invalid-feedback" role="alert">
+											<strong>{{ $message }}</strong>
+										</span>
+									@enderror
 								</div>
 							</div>
 							{{-- <div class="form-group row">
