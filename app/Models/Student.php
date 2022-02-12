@@ -195,16 +195,20 @@ class Student extends Model
             ['election_id', $electionID],
             ['voter_id', $this->user->user_id],
         ])->first();
-        if($position->candidate_to_elect < 2){
-            return VoteData::where([
-                ['vote_id', $vote->id],
-                ['position_id', $position->id],
-            ])->first();
+        if(isset($vote->id)){
+            if($position->candidate_to_elect < 2){
+                return VoteData::where([
+                    ['vote_id', $vote->id],
+                    ['position_id', $position->id],
+                ])->first();
+            }else{
+                return VoteData::where([
+                    ['vote_id', $vote->id],
+                    ['position_id', $position->id],
+                ])->get();
+            }
         }else{
-            return VoteData::where([
-                ['vote_id', $vote->id],
-                ['position_id', $position->id],
-            ])->get();
+            return false;
         }
     }
 

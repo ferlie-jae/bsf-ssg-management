@@ -41,20 +41,32 @@
                             $position = App\Models\Configuration\Position::find($position);
                         @endphp
                             @if($position->candidate_to_elect > 1)
-                                @forelse ($student->getVotedCandidate($election->id, $position) as $voteData)
-                                    <td>
-                                        {{ $voteData->candidate->student->fullname('') }}
-                                    </td>
-                                @empty
+                                @if ($student->getVotedCandidate($election->id, $position) == false)
                                     @for ($i = 0; $i < $position->candidate_to_elect; $i++)
                                         <td>
                                             N/A
                                         </td>
                                     @endfor
-                                @endforelse
+                                @else
+                                    @forelse ($student->getVotedCandidate($election->id, $position) as $voteData)
+                                        <td>
+                                            {{ $voteData->candidate->student->fullname('') }}
+                                        </td>
+                                    @empty
+                                        @for ($i = 0; $i < $position->candidate_to_elect; $i++)
+                                            <td>
+                                                N/A
+                                            </td>
+                                        @endfor
+                                    @endforelse
+                                @endif
                             @else
                                 <td>
-                                    {{ $student->getVotedCandidate($election->id, $position)->candidate->student->fullname('') }}
+                                    @if ($student->getVotedCandidate($election->id, $position) == false)
+                                        N/A
+                                    @else
+                                        {{ $student->getVotedCandidate($election->id, $position)->candidate->student->fullname('') }}
+                                    @endif
                                 </td>
                             @endif
                         @endforeach

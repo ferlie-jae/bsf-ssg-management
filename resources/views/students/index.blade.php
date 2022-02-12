@@ -80,9 +80,17 @@
                                                                     <td>{{ $index+1 }}</td>
                                                                     <td>
                                                                         @isset ($student->user)
-                                                                        <span class="text-success">Active</span>
+                                                                            @if($student->user->user->trashed())
+                                                                                <span class="badge badge-danger">User data DELETED</span>
+                                                                            @else
+                                                                                @if($student->user->user->is_verified == 1)
+                                                                                    <span class="badge badge-success">Verified</span>
+                                                                                @else
+                                                                                    <span class="badge badge-warning">Under Validation</span>
+                                                                                @endif
+                                                                            @endif
                                                                         @else
-                                                                        <span class="text-danger">N/A</span>
+                                                                            <span class="text-danger">N/A</span>
                                                                         @endif
                                                                     </td>
                                                                     <td>{{ $student->student_id }}</td>
