@@ -109,8 +109,10 @@
                                                     @endif
                                                 </td>
                                                 <td>
+                                                    @if($vote->user->student)
                                                     {{ "Grade ".$vote->user->student->student->section->section->grade_level.' | ' ?? "" }}
                                                     {{ $vote->user->student->student->section->section->name ?? "" }}
+                                                    @endif
                                                 </td>
                                                 @role('System Administrator')
                                                     <td class="text-center">

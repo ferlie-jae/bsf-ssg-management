@@ -44,14 +44,15 @@ class ElectionController extends Controller
     {
         $voteChart = new VoteChart();
         $elections = Election::select('*');
+        $juniorHighVoteStatisticsChart = [];
+        $seniorHighVoteStatisticsChart = [];
         if(Auth::user()->hasrole('System Administrator')){
             $elections = $elections->withTrashed();
         }
         $activeElection = Election::whereDate('end_date', '>', Carbon::now())->orderBy('end_date','DESC')->first();
 
         if(isset($activeElection->id)){
-            $juniorHighVoteStatisticsChart = [];
-            $seniorHighVoteStatisticsChart = [];
+            
             // Voters Statistics
             // Junior High School
             $juniorHigh = Section::whereIn('grade_level', ['7', '8', '9', '10'])->get()->groupBy('grade_level');
