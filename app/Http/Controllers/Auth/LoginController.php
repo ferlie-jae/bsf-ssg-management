@@ -68,6 +68,9 @@ class LoginController extends Controller
             }else{
                 if(isset(Auth::user()->student->id)){
                     $student = Student::withTrashed()->find(Auth::user()->student->student_id);
+                    if(explode('@',Auth::user()->email)[1] == "dummy.com"){
+                        return redirect()->route('users.first_login');
+                    }
                     if($student->trashed()){
                         Auth::logout();
                         return redirect()->route('login')
@@ -84,9 +87,6 @@ class LoginController extends Controller
                     }
                 }
             }
-
-            
-
             return redirect()->route('dashboard');
         }else{
             $user = User::where([

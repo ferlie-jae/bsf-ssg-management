@@ -131,7 +131,7 @@
                 <label class="mb-0">Contact #:</label>
                 {{ $user_info->contact_number }}
                 <br>
-                <label class="mb-0">Address #:</label>
+                <label class="mb-0">Address:</label>
                 {{ $user_info->address }}
             </div>
         </div>

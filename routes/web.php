@@ -101,6 +101,11 @@ Route::group(array('middleware'=>['auth']), function() {
 	 */
 	Route::resource('students', 'StudentController');
 	Route::put('students_update_avatar/{student}', 'StudentController@changeAvatar')->name('students.change_avatar');
+	// Import students from excel
+	Route::post('students-import', [
+		'as' => 'students.import',
+		'uses' => 'StudentController@import'
+	]);
 	// restore
 	Route::post('students_restore/{position}', [
 		'as' => 'students.restore',
@@ -138,6 +143,7 @@ Route::group(array('middleware'=>['auth']), function() {
 	Route::get('elections/end/{election}', 'ElectionController@endElection')->name('elections.end');
 	Route::get('election_result', 'ElectionController@results')->name('elections.results');
 	Route::get('election/export', 'ElectionController@export')->name('elections.export');
+	Route::get('election/voters_statistics/{election}', 'ElectionController@showVotersStatistics')->name('elections.voters_statistics');
 	// Route::post('elections/update_status/{election}', 'ElectionController@updateStatus')->name('elections.update_status');
 	Route::post('elections_restore/{election}', [
 		'as' => 'elections.restore',
@@ -216,6 +222,8 @@ Route::group(array('middleware'=>['auth']), function() {
 		'as' => 'users.sidebar_collapse',
 		'uses' => 'UserController@sidebar_collapse'
 	]); */
+	Route::get('first_login', 'UserController@firstLogin')->name('users.first_login');
+	Route::put('update_email/{user}', 'UserController@updateEmail')->name('users.update_email');
 	Route::get('account/{user}', 'UserController@account')->name('account.index');
 	Route::put('change_avatar/{user}', 'UserController@changeAvatar')->name('users.change_avatar');
 	Route::put('change_password/{user}', 'UserController@changePassword')->name('users.change_password');

@@ -8,6 +8,9 @@
                 <h1 class="m-0">Students</h1>
             </div>
             <div class="col-sm-6 text-right">
+                @hasrole('System Administrator')
+                <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#importStudents"><i class="fa fa-upload"></i> Import Students</button>
+                @endhasrole
                 @can('students.create')
                     <button class="btn btn-default" type="button" data-toggle="modal-ajax" data-href="{{ route('students.create') }}" data-target="#createStudent"><i class="fa fa-plus"></i> Add</button>
                 @endcan
@@ -101,7 +104,7 @@
                                                                     <td>
                                                                         {{ $student->section->section->name ?? "" }}
                                                                     </td>
-                                                                    <td>{{ $student->fullname('') }}</td>
+                                                                    <td>{{ $student->first_name }}</td>
                                                                     <td>{{ $student->middle_name }}</td>
                                                                     <td>{{ $student->last_name }}</td>
                                                                     @role('System Administrator')
@@ -177,4 +180,30 @@
         </div>
     </div>
 </section>
+@hasrole('System Administrator')
+<form action="{{ route('students.import') }}" method="POST" autocomplete="off" enctype="multipart/form-data">
+    @csrf
+    <div class="modal fade" id="importStudents" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Import Student</h5>
+                    <button type="button" class="close" data-dismiss="modal-ajax" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="file" name="excel_file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal-ajax">Cancel</button>
+                    <button id="btnSubmit" class="btn btn-default text-success" type="submit"><i class="fas fa-save"></i> Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+@endhasrole
 @endsection

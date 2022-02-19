@@ -325,4 +325,20 @@ class UserController extends Controller
         Mail::to($user->email)->send(new AccountDeactivatedMail($user));
         return redirect()->route('users.show', $user->id)->with('alert-success', 'saved');
     }
+
+    public function firstLogin()
+    {
+        return view('auth.first_login');
+    }
+
+    public function updateEmail(Request $request, User $user)
+    {
+        $request->validate([
+			'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
+        ]);
+        $user->update([
+            'email' => $request->get('email')
+        ]);
+        return redirect()->route('dashboard');
+    }
 }

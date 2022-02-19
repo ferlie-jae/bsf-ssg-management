@@ -11,9 +11,12 @@ use App\Models\Student;
 use App\Models\Candidate;
 use App\Models\Partylist;
 use App\Models\User;
+use App\Models\StudentSection;
 use App\Models\UserStudent;
 use App\Charts\OngoingElectionChart;
 use App\Charts\ElectionResultPieChart;
+use App\Charts\JuniorHighVotersChart;
+use App\Charts\SeniorHighVotersChart;
 use App\Charts\VoteChart;
 use Carbon\Carbon;
 use Auth;
@@ -47,39 +50,92 @@ class ElectionController extends Controller
         $activeElection = Election::whereDate('end_date', '>', Carbon::now())->orderBy('end_date','DESC')->first();
 
         if(isset($activeElection->id)){
-            $totalVoters = UserStudent::join('users', 'users.id', '=', 'user_students.id')->select('users.*')->count();
-            $voted = Vote::where('election_id', $activeElection->id)->count();
-            $notYetVoted = $totalVoters - $voted;
+            $juniorHighVoteStatisticsChart = [];
+            $seniorHighVoteStatisticsChart = [];
+            // Voters Statistics
+            // Junior High School
+            $juniorHigh = Section::whereIn('grade_level', ['7', '8', '9', '10'])->get()->groupBy('grade_level');
+            foreach($juniorHigh as $grade => $sections){
+                $juniorHighVoteStatisticsChart[$grade] = new JuniorHighVotersChart;
+                $juniorHighVoteStatisticsChart[$grade]->height('300');
 
-            // Pie Chart
+                // $juniorHighSectionIDs = Section::where('grade_level', '=', $grade)->get();
+                $juniorHighSectionIDs = [];
+                foreach($sections as $section){
+                    $juniorHighSectionIDs[] = $section->id;
+                }
+                // echo  "Grade ".$grade." => ".$juniorHighSectionIDs."</br>";
+                $juniorHighIDs = StudentSection::whereIn('section_id', $juniorHighSectionIDs)->get('student_id');
+                $juniorHighUserIDs = UserStudent::whereIn('student_id', $juniorHighIDs)->get('user_id');
+                $totalVoters = UserStudent::join('users', 'users.id', '=', 'user_students.id')->whereIn('user_students.user_id', $juniorHighUserIDs)->select('users.*')->count();
+                $voted = Vote::where('election_id', $activeElection->id)->whereIn('voter_id', $juniorHighUserIDs)->count();
+                $notYetVoted = $totalVoters - $voted;
+                
+                $percentageOfVoted = 0;
+                $percentageOfNotYetVoted = 0;
+                if($totalVoters > 0){
+                    $percentageOfVoted = round(($voted / $totalVoters) * 100, PHP_ROUND_HALF_UP );
+                    $percentageOfNotYetVoted = round(($notYetVoted / $totalVoters) * 100, PHP_ROUND_HALF_UP );
+                }
+                $juniorHighVoteStatisticsChart[$grade]->labels(['Voted ('.$percentageOfVoted.'%)', 'Not voted yet ('.$percentageOfNotYetVoted.'%)']);
+                $juniorHighVoteStatisticsChart[$grade]->dataset('Votes', 'pie', [$voted, $notYetVoted])->backgroundColor(['#28a745','#6c757d'])->color('#fff');
+                $juniorHighVoteStatisticsChart[$grade]->options([
+                    'scales' => [
+                        'yAxes' => [[
+                            'display' => false,
+                        ]],
+                        'xAxes' => [[
+                            'display' => false,
+                        ]]
+                    ]
+                ]);
+            }
 
-            $percentageOfVoted = round(($voted / $totalVoters) * 100, PHP_ROUND_HALF_UP );
-            $percentageOfNotYetVoted = round(($notYetVoted / $totalVoters) * 100, PHP_ROUND_HALF_UP );
-            $voteChart->labels(['Voted ('.$percentageOfVoted.'%)', 'Not yet voted ('.$percentageOfNotYetVoted.'%)']);
-            // $electionPieChart[$election->id][$position]->labels($pieChartLabels);
-            $voteChart->dataset('Votes', 'pie', [$voted, $notYetVoted])->backgroundColor(['#28a745','#6c757d'])->color('#fff');
-            $voteChart->options([
-                'scales' => [
-                    'yAxes' => [[
-                        'display' => false,
-                        /* 'gridLines' => [
-                            'display' => false
-                        ] */
-                    ]],
-                    'xAxes' => [[
-                        'display' => false,
-                        /* 'gridLines' => [
-                            'display' => false
-                        ] */
-                    ]]
-                ]
-            ]);
+            // Senior High School
+            $seniorHigh = Section::whereIn('grade_level', ['11', '12'])->get()->groupBy('grade_level');
+            foreach($seniorHigh as $grade => $sections){
+                foreach($sections as $section){
+                    $seniorHighVoteStatisticsChart[$grade.'-'.$section->id] = new SeniorHighVotersChart;
+                    $seniorHighVoteStatisticsChart[$grade.'-'.$section->id]->height('300');
+
+                    $seniorHighStudentIDs = [];
+                    foreach($section->students as $student){
+                        $seniorHighStudentIDs[] = $student->student_id;
+                    }
+                    $seniorHighUserIDs = UserStudent::whereIn('student_id', $seniorHighStudentIDs)->get('user_id');
+                    $totalVoters = UserStudent::join('users', 'users.id', '=', 'user_students.id')->whereIn('user_students.user_id', $seniorHighUserIDs)->select('users.*')->count();
+                    $voted = Vote::where('election_id', $activeElection->id)->whereIn('voter_id', $seniorHighUserIDs)->count();
+                    $notYetVoted = $totalVoters - $voted;
+                    
+                    $percentageOfVoted = 0;
+                    $percentageOfNotYetVoted = 0;
+                    if($totalVoters > 0){
+                        $percentageOfVoted = round(($voted / $totalVoters) * 100, PHP_ROUND_HALF_UP );
+                        $percentageOfNotYetVoted = round(($notYetVoted / $totalVoters) * 100, PHP_ROUND_HALF_UP );
+                    }
+                    $seniorHighVoteStatisticsChart[$grade.'-'.$section->id]->labels(['Voted ('.$percentageOfVoted.'%)', 'Not voted yet ('.$percentageOfNotYetVoted.'%)']);
+                    $seniorHighVoteStatisticsChart[$grade.'-'.$section->id]->dataset('Votes', 'pie', [$voted, $notYetVoted])->backgroundColor(['#28a745','#6c757d'])->color('#fff');
+                    $seniorHighVoteStatisticsChart[$grade.'-'.$section->id]->options([
+                        'scales' => [
+                            'yAxes' => [[
+                                'display' => false,
+                            ]],
+                            'xAxes' => [[
+                                'display' => false,
+                            ]]
+                        ]
+                    ]);
+                }
+            }
+            // End Voters Statistics
         }
 
         $data = [
             // 'election' => $elections->whereIn('status', ['incoming','ongoing'])->first()
             'election' => $activeElection,
-            'voteChart' => $voteChart
+            'juniorHighVoteStatisticsChart' => $juniorHighVoteStatisticsChart,
+            'seniorHighVoteStatisticsChart' => $seniorHighVoteStatisticsChart,
+            'gradeLevels' => Section::get(),
         ];
 
         return view('elections.index', $data);
@@ -307,10 +363,90 @@ class ElectionController extends Controller
     {
         $electionChart = [[]];
         $electionPieChart = [[]];
+        $juniorHighVoteStatisticsChart = [[]];
+        $seniorHighVoteStatisticsChart = [[]];
         $now = Carbon::now();
         $elections = Election::where('end_date', '<', $now)->orderBy('end_date','DESC')->get();
         foreach($elections as $election){
             if(isset($election->id)){
+                // Voters Statistics
+                // Junior High School
+                $juniorHigh = Section::whereIn('grade_level', ['7', '8', '9', '10'])->get()->groupBy('grade_level');
+                foreach($juniorHigh as $grade => $sections){
+                    $juniorHighVoteStatisticsChart[$election->id][$grade] = new JuniorHighVotersChart;
+                    $juniorHighVoteStatisticsChart[$election->id][$grade]->height('300');
+
+                    // $juniorHighSectionIDs = Section::where('grade_level', '=', $grade)->get();
+                    $juniorHighSectionIDs = [];
+                    foreach($sections as $section){
+                        $juniorHighSectionIDs[] = $section->id;
+                    }
+                    // echo  "Grade ".$grade." => ".$juniorHighSectionIDs."</br>";
+                    $juniorHighIDs = StudentSection::whereIn('section_id', $juniorHighSectionIDs)->get('student_id');
+                    $juniorHighUserIDs = UserStudent::whereIn('student_id', $juniorHighIDs)->get('user_id');
+                    $totalVoters = UserStudent::join('users', 'users.id', '=', 'user_students.id')->whereIn('user_students.user_id', $juniorHighUserIDs)->select('users.*')->count();
+                    $voted = Vote::where('election_id', $election->id)->whereIn('voter_id', $juniorHighUserIDs)->count();
+                    $notYetVoted = $totalVoters - $voted;
+                    
+                    $percentageOfVoted = 0;
+                    $percentageOfNotYetVoted = 0;
+                    if($totalVoters > 0){
+                        $percentageOfVoted = round(($voted / $totalVoters) * 100, PHP_ROUND_HALF_UP );
+                        $percentageOfNotYetVoted = round(($notYetVoted / $totalVoters) * 100, PHP_ROUND_HALF_UP );
+                    }
+                    $juniorHighVoteStatisticsChart[$election->id][$grade]->labels(['Voted ('.$percentageOfVoted.'%)', 'Did not Vote ('.$percentageOfNotYetVoted.'%)']);
+                    $juniorHighVoteStatisticsChart[$election->id][$grade]->dataset('Votes', 'pie', [$voted, $notYetVoted])->backgroundColor(['#28a745','#6c757d'])->color('#fff');
+                    $juniorHighVoteStatisticsChart[$election->id][$grade]->options([
+                        'scales' => [
+                            'yAxes' => [[
+                                'display' => false,
+                            ]],
+                            'xAxes' => [[
+                                'display' => false,
+                            ]]
+                        ]
+                    ]);
+                }
+
+                // Senior High School
+                $seniorHigh = Section::whereIn('grade_level', ['11', '12'])->get()->groupBy('grade_level');
+                foreach($seniorHigh as $grade => $sections){
+                    foreach($sections as $section){
+                        $seniorHighVoteStatisticsChart[$election->id][$grade.'-'.$section->id] = new SeniorHighVotersChart;
+                        $seniorHighVoteStatisticsChart[$election->id][$grade.'-'.$section->id]->height('300');
+
+                        $seniorHighStudentIDs = [];
+                        foreach($section->students as $student){
+                            $seniorHighStudentIDs[] = $student->student_id;
+                        }
+                        $seniorHighUserIDs = UserStudent::whereIn('student_id', $seniorHighStudentIDs)->get('user_id');
+                        $totalVoters = UserStudent::join('users', 'users.id', '=', 'user_students.id')->whereIn('user_students.user_id', $seniorHighUserIDs)->select('users.*')->count();
+                        $voted = Vote::where('election_id', $election->id)->whereIn('voter_id', $seniorHighUserIDs)->count();
+                        $notYetVoted = $totalVoters - $voted;
+                        
+                        $percentageOfVoted = 0;
+                        $percentageOfNotYetVoted = 0;
+                        if($totalVoters > 0){
+                            $percentageOfVoted = round(($voted / $totalVoters) * 100, PHP_ROUND_HALF_UP );
+                            $percentageOfNotYetVoted = round(($notYetVoted / $totalVoters) * 100, PHP_ROUND_HALF_UP );
+                        }
+                        $seniorHighVoteStatisticsChart[$election->id][$grade.'-'.$section->id]->labels(['Voted ('.$percentageOfVoted.'%)', 'Did not Vote ('.$percentageOfNotYetVoted.'%)']);
+                        $seniorHighVoteStatisticsChart[$election->id][$grade.'-'.$section->id]->dataset('Votes', 'pie', [$voted, $notYetVoted])->backgroundColor(['#28a745','#6c757d'])->color('#fff');
+                        $seniorHighVoteStatisticsChart[$election->id][$grade.'-'.$section->id]->options([
+                            'scales' => [
+                                'yAxes' => [[
+                                    'display' => false,
+                                ]],
+                                'xAxes' => [[
+                                    'display' => false,
+                                ]]
+                            ]
+                        ]);
+                    }
+                }
+                // End Voters Statistics
+
+                // Candidates Statistics
                 foreach ($election->candidates->groupBy('position_id') as $position => $candidates) {
                     $electionChart[$election->id][$position] = new OngoingElectionChart;
                     $electionChart[$election->id][$position]->height(300);
@@ -365,10 +501,8 @@ class ElectionController extends Controller
                     $electionPieChart[$election->id][$position]->labels($pieChartLabelsByPercentage);
                     // $electionPieChart[$election->id][$position]->labels($pieChartLabels);
                     $electionPieChart[$election->id][$position]->dataset('Votes', 'pie', $pieChartData)->backgroundColor($labelColors)->color('#fff');
-                    
                     // $electionChart[$election->id][$position]->dataset('votes', 'bar', $votes)->backgroundColor('#007bff')->color('#007bff');
                     $electionPieChart[$election->id][$position]->options([
-                        
                         'scales' => [
                             'yAxes' => [[
                                 'display' => false,
@@ -385,16 +519,74 @@ class ElectionController extends Controller
                         ]
                     ]);
                 }
+                // End of Candidates Statistics
             }
         }
 
         $data = [
             'electionChart' => $electionChart,
             'electionPieChart' => $electionPieChart,
+            'juniorHighVoteStatisticsChart' => $juniorHighVoteStatisticsChart,
+            'seniorHighVoteStatisticsChart' => $seniorHighVoteStatisticsChart,
             'elections' => $elections,
+            'gradeLevels' => Section::get(),
         ];
 
         return view('elections.results', $data);
+    }
+
+    public function showVotersStatistics(Request $request, Election $election)
+    {
+        /* $juniorHighVotersChart = [];
+        $seniorHighVotersChart = [[]];
+
+        $juniorHigh = Section::whereIn('setions.grade_level', ['7', '8', '9', '10'])->get()->groupBy('grade_level');
+        $juniorHighStudentIDs = [[]];
+        foreach ($juniorHigh as $grade => $sections)
+        {
+            
+            if($grade > 10){
+                $seniorHighVotersChart[$grade][$election->id] = new JuniorHighVotersChart();
+                foreach($sections as $section)
+                {
+
+                }
+            }else{
+                $juniorHighVoters = $section->students;
+            }
+        }    */
+        $voteChart = new VoteChart();
+        $voteChart->height('300');
+        $totalVoters = UserStudent::join('users', 'users.id', '=', 'user_students.id')->select('users.*')->count();
+        $voted = Vote::where('election_id', $election->id)->count();
+        $notYetVoted = $totalVoters - $voted;
+
+        // Pie Chart
+        $percentageOfVoted = round(($voted / $totalVoters) * 100, PHP_ROUND_HALF_UP );
+        $percentageOfNotYetVoted = round(($notYetVoted / $totalVoters) * 100, PHP_ROUND_HALF_UP );
+        $voteChart->labels(['Voted ('.$percentageOfVoted.'%)', 'Not yet voted ('.$percentageOfNotYetVoted.'%)']);
+        // $electionPieChart[$election->id][$position]->labels($pieChartLabels);
+        $voteChart->dataset('Votes', 'pie', [$voted, $notYetVoted])->backgroundColor(['#28a745','#6c757d'])->color('#fff');
+        $voteChart->options([
+            'scales' => [
+                'yAxes' => [[
+                    'display' => false,
+                ]],
+                'xAxes' => [[
+                    'display' => false,
+                ]]
+            ]
+        ]);
+
+        $data = [
+            'voteStatisticsChart' => $voteChart
+        ];
+
+        return response()->json([
+            'modal_content' => view('elections.voters_statistics', $data)->render()
+        ]);
+
+        // $juniorHighVoters = StudentSection::join('sections', 'sections.id', '=','student_sections.id')->select('student_sections.student_id');
     }
 
     public function endElection(Election $election)

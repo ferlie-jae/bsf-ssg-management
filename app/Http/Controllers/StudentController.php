@@ -3,14 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
-use Illuminate\Http\Request;
-use Auth;
-use Illuminate\Support\Facades\Hash;
+use App\Imports\StudentsImport;
 use App\Models\Configuration\RolePermission\Role;
 use App\Models\User;
 use App\Models\UserStudent;
 use App\Models\Configuration\Section;
 use App\Models\StudentSection;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Auth;
 
 class StudentController extends Controller
 {
@@ -228,5 +230,16 @@ class StudentController extends Controller
 		$student->restore();
 		$student->section->restore();
 		return redirect()->route('students.index')->with('alert-success','Restored');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'excel_file' => 'required|mimes:xlsx'
+        ]);
+        /* $uploadPath = 'images/user/uploads/';
+        Storage::disk('upload')->putFileAs($uploadPath, $file, $fileName); */
+        Excel::import(new StudentsImport, $request->file('excel_file'));
+        return redirect()->route('students.index')->with('alert-success', 'Students successfully imported');
     }
 }

@@ -22,7 +22,7 @@ class CreateStudentsTable extends Migration
             $table->string('last_name');
             $table->string('suffix')->nullable();
             $table->date('birth_date')->nullable();
-            $table->enum('gender', ['male', 'female']);
+            $table->enum('gender', ['male', 'female'])->nullable();
             $table->string('contact_number')->unique()->nullable();
             $table->text('address')->nullable();
             $table->timestamps();

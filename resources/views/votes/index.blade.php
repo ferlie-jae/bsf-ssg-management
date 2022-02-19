@@ -89,6 +89,7 @@
                                                 <th>Election</th>
                                                 <th>Vote Number</th>
                                                 <th>Name</th>
+                                                <th>Grade/Section</th>
                                                 @role('System Administrator')
                                                 <th class="text-center">Action</th>
                                                 @endrole
@@ -106,6 +107,10 @@
                                                     @elseif($vote->user->faculty)
                                                     {{ $vote->user->faculty->student->fullname('') }}
                                                     @endif
+                                                </td>
+                                                <td>
+                                                    {{ "Grade ".$vote->user->student->student->section->section->grade_level.' | ' ?? "" }}
+                                                    {{ $vote->user->student->student->section->section->name ?? "" }}
                                                 </td>
                                                 @role('System Administrator')
                                                     <td class="text-center">

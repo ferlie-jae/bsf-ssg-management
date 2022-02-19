@@ -95,7 +95,7 @@ class Student extends Model
                     $name = $this->first_name.' '.
                         ((is_null($this->middle_name) || $this->middle_name=='') ? '' : $this->middle_name[0].'. ').
                         $this->last_name.
-                        (is_null($this->suffix) ? '' : ', '.$this->suffix);
+                        (is_null($this->suffix) || $this->suffix == '' ? '' : ', '.$this->suffix);
                         break;
             }
         }

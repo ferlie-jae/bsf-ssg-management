@@ -37,6 +37,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col text-right">
+                                        <a class="btn btn-primary" href="javascript:void(0)" data-toggle="modal-ajax" data-href="{{ route('elections.voters_statistics', $election->id) }}" data-target="#votersStatistics"><i class="fad fa-table"></i> Voters Statistics</a>
                                         <a class="btn btn-primary" href="{{ route('elections.export', ['election_id' => $election->id]) }}" target="_blank"><i class="fad fa-table"></i> Export Excel</a>
                                         @if ($election->trashed())
                                             @can('elections.restore')
@@ -53,7 +54,59 @@
                                     </div>
                                 </div>
                                 <hr>
+                                <h3>Vote Statistics</h3>
+                                <h5>Junior High School</h5>
+                                <div class="row">
+                                    @foreach ($gradeLevels->groupBy('grade_level') as $grade => $sections)
+                                        @if($grade < 11)
+                                            <div class="col-md-3">
+                                                <div class="card card-success card-outline">
+                                                    <div class="card-header">
+                                                        <h4 class="card-title">Grade {{ $grade }}</h4>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <div class="position-relative">
+                                                                    {!! $juniorHighVoteStatisticsChart[$election->id][$grade]->container() !!}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div>
+                                <hr>
+                                <h5>Senior High School</h5>
+                                <div class="row">
+                                    @foreach ($gradeLevels->groupBy('grade_level') as $grade => $sections)
+                                        @if($grade > 10)
+                                            @foreach ($sections as $section)
+                                                <div class="col-md-3">
+                                                    <div class="card card-success card-outline">
+                                                        <div class="card-header">
+                                                            <h4 class="card-title">Grade {{ $grade }} | {{ $section->name }}</h4>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="position-relative">
+                                                                        {!! $seniorHighVoteStatisticsChart[$election->id][$grade.'-'.$section->id]->container() !!}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        @endif
+                                    @endforeach
+                                </div>
+                                <hr>
                                 <div class="position-relative mb-4">
+                                    <h3>Candidates</h3>
                                     <div class="row">
                                         @foreach ($election->candidates->groupBy('position_id') as $position => $candidates)
                                             <div class="col-md-12">
@@ -120,16 +173,41 @@
 
 @section('script')
     <script src="{{ asset('AdminLTE-3.1.0/plugins/chart.js/Chart.min.js') }}"></script>
+    {{-- {!! $juniorHighVoteStatisticsChart[1][7]->script() !!}
+    {!! $juniorHighVoteStatisticsChart[1][8]->script() !!}
+    {!! $juniorHighVoteStatisticsChart[1][9]->script() !!}
+    {!! $juniorHighVoteStatisticsChart[1][10]->script() !!} --}}
     @foreach ($elections as $election)
         @isset($election->id)
+
+            @foreach ($gradeLevels->groupBy('grade_level') as $grade => $sections)
+                <script>
+                    console.log('{{$grade}}')
+                </script>
+                @if($grade < 11)
+                    <script>
+                        var juniorHighVoteStatisticsChart = new Chart('{{ $juniorHighVoteStatisticsChart[$election->id][$grade]->id }}')
+                    </script>
+                    {!! $juniorHighVoteStatisticsChart[$election->id][$grade]->script() !!}
+                @else
+                    @foreach ($sections as $section)
+                        <script>
+                            var seniorHighVoteStatisticsChart = new Chart('{{ $seniorHighVoteStatisticsChart[$election->id][$grade."-".$section->id]->id }}')
+                        </script>
+                        {!! $seniorHighVoteStatisticsChart[$election->id][$grade."-".$section->id]->script() !!}
+                    @endforeach
+                @endif
+            @endforeach
+
             @foreach ($election->candidates->groupBy('position_id') as $position => $candidates)
-            <script>
-                var chart = new Chart('{{ $electionChart[$election->id][$position]->id }}')
-                var pieChart = new Chart('{{ $electionPieChart[$election->id][$position]->id }}')
-            </script>
+                <script>
+                    var chart = new Chart('{{ $electionChart[$election->id][$position]->id }}')
+                    var pieChart = new Chart('{{ $electionPieChart[$election->id][$position]->id }}')
+                </script>
                 {!! $electionChart[$election->id][$position]->script() !!}
                 {!! $electionPieChart[$election->id][$position]->script() !!}
             @endforeach
+
         @endisset
     @endforeach
 @endsection
