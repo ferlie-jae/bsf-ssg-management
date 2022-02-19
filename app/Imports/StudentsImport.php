@@ -72,8 +72,8 @@ class StudentsImport implements ToCollection, WithHeadingRow
                     'is_verified' => 1,
                     'username' => $student->student_id,
                     'email' => strtolower($student->last_name).'.'.$student->id.'@dummy.com',
-                    'password' => Hash::make($student->student_id.'-'.ucfirst($student->last_name)), // student_id-Lastname
-                    'temp_password' => $student->student_id.'-'.ucfirst($student->last_name)
+                    'password' => Hash::make($student->student_id.'-'.strtolower($student->last_name)), // student_id-Lastname
+                    'temp_password' => $student->student_id.'-'.strtolower($student->last_name)
                 ]);
 
                 $user->assignRole(4);
