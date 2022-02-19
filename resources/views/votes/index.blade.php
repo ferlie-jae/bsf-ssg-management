@@ -105,7 +105,7 @@
                                                     @if($vote->user->student)
                                                     {{ $vote->user->student->student->fullname('') }}
                                                     @elseif($vote->user->faculty)
-                                                    {{ $vote->user->faculty->student->fullname('') }}
+                                                    {{ $vote->user->faculty->faculty->fullname('') }}
                                                     @endif
                                                 </td>
                                                 <td>
