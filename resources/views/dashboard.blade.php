@@ -75,7 +75,7 @@
                 @isset($election->id)
                 <div class="card">
                     <div class="card-header text-center">
-                        <h4 class="card-title">Ongoing Election</h4>
+                        <h4 class="card-title">{{ $election->title }} | {{ $election->getStatus() }}</h4>
                     </div>
                     <div class="card-body">
                         <div class="position-relative mb-4">
@@ -86,7 +86,6 @@
                                             <div class="card-header border-0">
                                                 <div class="d-flex justify-content-between">
                                                     <h3 class="card-title">{{ App\Models\Configuration\Position::find($position)->name }}</h3>
-                                                    {{-- <a href="javascript:void(0);">View Report</a> --}}
                                                 </div>
                                             </div>
                                             <div class="card-body">
