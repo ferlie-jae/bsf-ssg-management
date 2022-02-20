@@ -42,10 +42,7 @@ class HomeController extends Controller
 
         $electionChart = [];
         $electionPieChart = [];
-        $ongoingElection = Election::where([
-                            ['start_date', '<', $now],
-                            ['end_date', '>', $now]
-                            ])->orderBy('end_date','DESC')->first();
+        $ongoingElection = Election::whereDate('start_date', '<', $now)->whereDate('end_date', '>', $now)->orderBy('end_date','DESC')->first();
         if(isset($ongoingElection->id)){
             foreach ($ongoingElection->candidates->groupBy('position_id') as $position => $candidates) {
                 $electionChart[$position] = new OngoingElectionChart;
