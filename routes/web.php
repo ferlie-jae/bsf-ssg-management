@@ -223,7 +223,7 @@ Route::group(array('middleware'=>['auth']), function() {
 		'uses' => 'UserController@sidebar_collapse'
 	]); */
 	Route::get('first_login', 'UserController@firstLogin')->name('users.first_login');
-	Route::put('update_email/{user}', 'UserController@updateEmail')->name('users.update_email');
+	Route::put('update_credentials/{user}', 'UserController@updateCredentials')->name('users.update_credentials');
 	Route::get('account/{user}', 'UserController@account')->name('account.index');
 	Route::put('change_avatar/{user}', 'UserController@changeAvatar')->name('users.change_avatar');
 	Route::put('change_password/{user}', 'UserController@changePassword')->name('users.change_password');

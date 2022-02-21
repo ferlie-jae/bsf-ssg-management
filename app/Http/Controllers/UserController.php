@@ -331,14 +331,17 @@ class UserController extends Controller
         return view('auth.first_login');
     }
 
-    public function updateEmail(Request $request, User $user)
+    public function updateCredentials(Request $request, User $user)
     {
         $request->validate([
-			'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
+            'new_password' => 'confirmed|min:8'
         ]);
         $user->update([
-            'email' => $request->get('email')
+            'email' => $request->get('email'),
+            'password' => Hash::make($request->get('new_password'))
         ]);
-        return redirect()->route('dashboard');
+        Auth::logout();
+        return redirect()->route('login');
     }
 }

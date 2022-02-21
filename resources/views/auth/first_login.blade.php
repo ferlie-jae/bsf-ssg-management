@@ -19,8 +19,8 @@
                     <a href="/" class="h1">Binmaley School of Fisheries Management</a>
                 </div>
                 <div class="card-body">
-                    <p class="login-box-msg">Welcome {{ Auth::user()->student->student->first_name }}, please update your email.</p>
-                    <form action="{{ route('users.update_email', Auth::user()->id) }}" method="post">
+                    <p class="login-box-msg">Welcome {{ Auth::user()->student->student->first_name }}, please update your email and password.</p>
+                    <form action="{{ route('users.update_credentials', Auth::user()->id) }}" method="post">
                         @csrf
                         @method('PUT')
                         <div class="input-group mb-3">
@@ -36,6 +36,33 @@
                                 </span>
                             @enderror
                         </div>
+                        <div class="input-group mb-3">
+                            <input id="new_password" placeholder="New Password" type="password" class="form-control @error('new_password') is-invalid @enderror" name="new_password" value="{{ old('new_password') }}" required autofocus>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-lock"></span>
+                                </div>
+                            </div>
+                            @error('new_password')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                        <div class="input-group mb-3">
+                            <input id="new_password_confirmation" placeholder="Confirm New Password" type="password" class="form-control @error('new_password_confirmation') is-invalid @enderror" name="new_password_confirmation" value="{{ old('new_password_confirmation') }}" required autofocus>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-lock"></span>
+                                </div>
+                            </div>
+                            @error('new_password_confirmation')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                        
                         <div class="row">
                             <div class="col">
                                 <button type="submit" class="btn btn-primary btn-block">Submit</button>
